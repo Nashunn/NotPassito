@@ -1,13 +1,6 @@
 <template>
-  <v-app>
-    <router-view></router-view>
-  </v-app>
+  <div id="app">
+    <notifications></notifications>
+    <router-view/>
+  </div>
 </template>
-
-<script>
-export default {
-  name: 'App',
-  data: () => ({
-  })
-}
-</script>
