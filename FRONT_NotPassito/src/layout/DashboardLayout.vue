@@ -1,5 +1,6 @@
 <template>
   <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
+    <!-- Sidebar left -->
     <side-bar
       :background-color="sidebarBackground"
       short-title="Argon"
@@ -13,7 +14,6 @@
             path: '/dashboard'
           }"
         />
-
         <sidebar-item :link="{name: 'Icons', icon: 'ni ni-planet text-blue', path: '/icons'}"/>
         <sidebar-item :link="{name: 'Maps', icon: 'ni ni-pin-3 text-orange', path: '/maps'}"/>
         <sidebar-item :link="{name: 'User Profile', icon: 'ni ni-single-02 text-yellow', path: '/profile'}"/>
@@ -23,15 +23,21 @@
 
       </template>
     </side-bar>
+    <!-- End Sidebar left -->
+    <!-- Main content with : navbar, our content loaded with router, footer -->
     <div class="main-content" :data="sidebarBackground">
+      <!-- Navbar -->
       <dashboard-navbar></dashboard-navbar>
+      <!-- End Navbar -->
 
       <div @click="toggleSidebar">
         <fade-transition :duration="200" origin="center top" mode="out-in">
-          <!-- your content here -->
+          <!-- Our view loaded by router -->
           <router-view></router-view>
         </fade-transition>
+        <!-- Footer -->
         <content-footer v-if="!$route.meta.hideFooter"></content-footer>
+        <!-- End Footer -->
       </div>
     </div>
   </div>
