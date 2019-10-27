@@ -3,24 +3,18 @@
     <!-- Sidebar left -->
     <side-bar
       :background-color="sidebarBackground"
-      short-title="Argon"
-      title="Argon"
+      short-title="NotPassito"
+      title="NotPassito"
     >
       <template slot="links">
         <sidebar-item
           :link="{
-            name: 'Home',
-            icon: 'ni ni-tv-2 text-primary',
-            path: '/'
+            name: 'Table exemple',
+            icon: 'ni ni-bullet-list-67 text-primary',
+            path: '/tables'
           }"
         />
-        <sidebar-item :link="{name: 'Icons', icon: 'ni ni-planet text-blue', path: '/icons'}"/>
-        <sidebar-item :link="{name: 'Maps', icon: 'ni ni-pin-3 text-orange', path: '/maps'}"/>
-        <sidebar-item :link="{name: 'User Profile', icon: 'ni ni-single-02 text-yellow', path: '/profile'}"/>
-        <sidebar-item :link="{name: 'Tables', icon: 'ni ni-bullet-list-67 text-red', path: '/tables'}"/>
-        <sidebar-item :link="{name: 'Login', icon: 'ni ni-key-25 text-info', path: '/login'}"/>
-        <sidebar-item :link="{name: 'Register', icon: 'ni ni-circle-08 text-pink', path: '/register'}"/>
-
+        <sidebar-item :link="{name: 'Nouvelle table', icon: 'ni ni-fat-add text-red', path: '/addTables'}"/>
       </template>
     </side-bar>
     <!-- End Sidebar left -->
