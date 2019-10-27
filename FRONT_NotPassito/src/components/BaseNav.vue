@@ -45,7 +45,7 @@ export default {
     },
     title: {
       type: String,
-      default: 'Name of table',
+      default: 'View Name',
       description: 'Title of navbar'
     },
     contentId: {

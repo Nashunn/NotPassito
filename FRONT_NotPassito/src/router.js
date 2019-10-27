@@ -9,13 +9,18 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: 'tables',
+      redirect: 'profile',
       component: BaseLayout,
       children: [
         {
           path: '/tables',
           name: 'tables',
           component: () => import('./views/Tables.vue')
+        },
+        {
+          path: '/profile',
+          name: 'profile',
+          component: () => import('./views/UserProfile.vue')
         }
       ]
     }

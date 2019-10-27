@@ -6,8 +6,8 @@
             <navbar-toggle-button @click.native="showSidebar">
                 <span class="navbar-toggler-icon"></span>
             </navbar-toggle-button>
-            <router-link class="navbar-brand" to="/">
-                <img :src="logo" class="navbar-brand-img" alt="...">
+            <router-link class="" to="/">
+                <img :src="logo" class="np-logo-navbar" alt="...">
             </router-link>
 
             <slot name="mobile-right">
@@ -27,7 +27,7 @@
                         <a slot="title" class="nav-link" href="#" role="button">
                             <div class="media align-items-center">
                               <span class="avatar avatar-sm rounded-circle">
-                                <img alt="Image placeholder" src="img/theme/team-1-800x800.jpg">
+                                <img alt="Image placeholder" src="img/np/user.png">
                               </span>
                             </div>
                         </a>
@@ -86,7 +86,7 @@ export default {
   props: {
     logo: {
       type: String,
-      default: 'img/brand/green.png',
+      default: 'logo.png',
       description: 'Sidebar app logo'
     },
     autoClose: {
