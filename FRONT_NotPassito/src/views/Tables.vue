@@ -29,8 +29,8 @@
                   <td>xx/xx/xxxx</td>
                   <td>xx/xx/xxxx</td>
                   <td>
-                    <v-btn class="bg-info text-white bold mx-1" small>Modifier</v-btn>
-                    <v-btn class="bg-danger text-white bold mx-1" small>Supprimer</v-btn>
+                    <v-btn @click="showModified()" class="bg-info text-white bold mx-1" small>Modifier</v-btn>
+                    <v-btn @click="showDelete()" class="bg-danger text-white bold mx-1" small>Supprimer</v-btn>
                   </td>
                 </tr>
               </tbody>
@@ -40,6 +40,8 @@
     </div>
 </template>
 <script>
+import { EventBus } from '../event/eventBus'
+
 export default {
   name: 'base-nav',
   props: {
@@ -47,6 +49,12 @@ export default {
       type: String,
       default: 'Table name',
       description: 'Title of the table'
+    }
+  },
+  methods: {
+    showDelete () {
+      this.showPopup = true
+      EventBus.$emit('showDeletePopup', this.showPopup)
     }
   }
 }
