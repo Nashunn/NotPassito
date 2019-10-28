@@ -66,7 +66,6 @@
                         </div>
                     </div>
                 </div>
-
                 <ul class="navbar-nav">
                     <slot name="links">
                     </slot>
