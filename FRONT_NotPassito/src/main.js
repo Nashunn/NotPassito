@@ -1,7 +1,7 @@
 /*!
 
 =========================================================
-* Vue Argon Dashboard - v1.0.0
+* Made from : Vue Argon Dashboard - v1.0.0
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/argon-dashboard

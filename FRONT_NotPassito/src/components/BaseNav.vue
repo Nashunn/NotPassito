@@ -9,7 +9,7 @@
             <slot name="brand">
                 <router-link :to="$route.path"
                              class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block">
-                    {{$route.name}}
+                    {{ title }}
                 </router-link>
             </slot>
             <navbar-toggle-button v-if="showToggleButton"
@@ -45,7 +45,7 @@ export default {
     },
     title: {
       type: String,
-      default: '',
+      default: 'View Name',
       description: 'Title of navbar'
     },
     contentId: {

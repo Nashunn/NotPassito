@@ -1,0 +1,16 @@
+//
+// Not Passito
+//
+
+/* navbar */
+@include media-breakpoint-up(sm) {
+  .np-logo-navbar {
+    width: 40px;
+  }
+}
+@include media-breakpoint-up(lg) {
+  .np-logo-navbar {
+    width: 40%;
+    margin: 0 30%;
+  }
+}

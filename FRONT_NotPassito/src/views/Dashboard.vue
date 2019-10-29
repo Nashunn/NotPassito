@@ -1,7 +1,7 @@
 <template>
     <div>
-        <base-header type="gradient-red" class="pb-6 pb-8 pt-5 pt-md-8">
-            <!-- Card stats -->
+        <base-header type="gradient-blue" class="pb-6 pb-8 pt-5 pt-md-8">
+            <!-- Card stats --
             <div class="row">
                 <div class="col-xl-3 col-lg-6">
                     <stats-card title="Total traffic"
@@ -61,9 +61,10 @@
                     </stats-card>
                 </div>
             </div>
+            -->
         </base-header>
 
-        <!--Charts-->
+        <!--Charts--
         <div class="container-fluid mt--7">
             <div class="row">
                 <div class="col-xl-8 mb-5 mb-xl-0">
@@ -125,9 +126,9 @@
                     </card>
                 </div>
             </div>
-            <!-- End charts-->
+            !--End charts-->
 
-            <!--Tables-->
+            <!--Tables--
             <div class="row mt-5">
                 <div class="col-xl-8 mb-5 mb-xl-0">
                     <page-visits-table></page-visits-table>
@@ -136,12 +137,12 @@
                     <social-traffic-table></social-traffic-table>
                 </div>
             </div>
-            <!--End tables-->
-        </div>
-
+            !--End tables--
+        </div>-->
     </div>
 </template>
 <script>
+/*
 // Charts
 import * as chartConfigs from '@/components/Charts/config'
 import LineChart from '@/components/Charts/LineChart'
@@ -150,13 +151,16 @@ import BarChart from '@/components/Charts/BarChart'
 // Tables
 import SocialTrafficTable from './Dashboard/SocialTrafficTable'
 import PageVisitsTable from './Dashboard/PageVisitsTable'
+*/
 
 export default {
   components: {
+    /*
     LineChart,
     BarChart,
     PageVisitsTable,
     SocialTrafficTable
+    */
   },
   data () {
     return {
@@ -169,8 +173,8 @@ export default {
         chartData: {
           datasets: [],
           labels: []
-        },
-        extraOptions: chartConfigs.blueChartOptions
+        }
+        // extraOptions: chartConfigs.blueChartOptions
       },
       redBarChart: {
         chartData: {

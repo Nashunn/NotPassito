@@ -1,85 +1,83 @@
 <template>
     <div>
-        <base-header type="gradient-success" class="pb-6 pb-8 pt-5 pt-md-8">
-            <!-- Card stats -->
-            <div class="row">
-                <div class="col-xl-3 col-lg-6">
-                    <stats-card title="Total traffic"
-                                type="gradient-red"
-                                sub-title="350,897"
-                                icon="ni ni-active-40"
-                                class="mb-4 mb-xl-0">
-
-                        <template slot="footer">
-                            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
-                            <span class="text-nowrap">Since last month</span>
-                        </template>
-                    </stats-card>
-                </div>
-                <div class="col-xl-3 col-lg-6">
-                    <stats-card title="Total traffic"
-                                type="gradient-orange"
-                                sub-title="2,356"
-                                icon="ni ni-chart-pie-35"
-                                class="mb-4 mb-xl-0">
-
-                        <template slot="footer">
-                            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 12.18%</span>
-                            <span class="text-nowrap">Since last month</span>
-                        </template>
-                    </stats-card>
-                </div>
-                <div class="col-xl-3 col-lg-6">
-                    <stats-card title="Sales"
-                                type="gradient-green"
-                                sub-title="924"
-                                icon="ni ni-money-coins"
-                                class="mb-4 mb-xl-0">
-
-                        <template slot="footer">
-                            <span class="text-danger mr-2"><i class="fa fa-arrow-down"></i> 5.72%</span>
-                            <span class="text-nowrap">Since last month</span>
-                        </template>
-                    </stats-card>
-
-                </div>
-                <div class="col-xl-3 col-lg-6">
-                    <stats-card title="Performance"
-                                type="gradient-info"
-                                sub-title="49,65%"
-                                icon="ni ni-chart-bar-32"
-                                class="mb-4 mb-xl-0">
-
-                        <template slot="footer">
-                            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 54.8%</span>
-                            <span class="text-nowrap">Since last month</span>
-                        </template>
-                    </stats-card>
-                </div>
-            </div>
-        </base-header>
-
-        <div class="container-fluid mt--7">
-            <div class="row">
-                <div class="col">
-                    <projects-table title="Light Table"></projects-table>
-                </div>
-            </div>
-            <div class="row mt-5">
-                <div class="col">
-                    <projects-table type="dark" title="Dark Table"></projects-table>
-                </div>
-            </div>
-        </div>
-
+      <!-- Popup -->
+      <popupDeleteLine>
+        <template slot="body">Delete Line ?</template>
+      </popupDeleteLine>
+     <!-- End Popup -->
+      <base-header type="gradient-blue" class="pb-6 pb-8 pt-5 pt-md-8"></base-header>
+      <div class="mx-5">
+        <div class="my-2">{{ title }}</div>
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">Name</th>
+                <th class="text-left">User</th>
+                <th class="text-left">Password</th>
+                <th class="text-left">URL</th>
+                <th class="text-left">Created</th>
+                <th class="text-left">Modified</th>
+                <th class="text-left">Expired</th>
+                <th class="text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr :key="pwd.passwd_id" v-for="pwd in pwds">
+                <td>{{ pwd.passwd_name }}</td>
+                <td>{{ pwd.passwd_user }}</td>
+                <td>{{ pwd.passwd_value }}</td>
+                <td>url.com</td>
+                <td>xx/xx/xxxx</td>
+                <td>xx/xx/xxxx</td>
+                <td>xx/xx/xxxx</td>
+                <td>
+                  <v-btn @click="showModified()" class="bg-info text-white bold mx-1" small>Modifier</v-btn>
+                  <v-btn @click="showDelete('IDItem')" class="bg-danger text-white bold mx-1" small>Supprimer</v-btn>
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </div>
     </div>
 </template>
 <script>
-import ProjectsTable from './Tables/ProjectsTable'
+import { EventBus } from '../event/eventBus'
+import { HTTP } from '../http-constants'
+import PopupDeleteLine from './Popup/PopupDeleteLine'
+
 export default {
-  name: 'tables',
+  name: 'base-nav',
+  data () {
+    return {
+      pwds: []
+    }
+  },
   components: {
-    ProjectsTable
+    PopupDeleteLine
+  },
+  props: {
+    title: {
+      type: String,
+      default: 'Table name',
+      description: 'Title of the table'
+    }
+  },
+  mounted () {
+    // Get pwds lines
+    this.getPwds()
+  },
+  methods: {
+    showDelete (id) {
+      this.showPopup = true
+      EventBus.$emit('showDeletePopup', { 'show': this.showPopup, 'id': id })
+    },
+    getPwds () {
+      HTTP.get('').then(response => {
+        this.pwds = response.data.result
+      })
+    }
   }
 }
 </script>
