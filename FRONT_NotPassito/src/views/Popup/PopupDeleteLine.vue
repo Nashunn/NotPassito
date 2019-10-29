@@ -13,7 +13,7 @@
         <div class="modal-content" :class="[gradient ? `bg-gradient-${gradient}` : '',modalContentClasses]">
           <!-- Body -->
           <div class="modal-body" :class="bodyClasses">
-            <slot>Body</slot>
+            <slot name="body"></slot> ({{ idItem }})
             <v-btn @click="closeModal">CLOSE</v-btn>
           </div>
           <!-- End Body -->
@@ -36,7 +36,8 @@ export default {
   },
   data () {
     return {
-      show: false
+      show: false,
+      idItem: -1
     }
   },
   props: {
@@ -89,8 +90,9 @@ export default {
     }
   },
   mounted () {
-    EventBus.$on('showDeletePopup', show => {
-      this.show = show
+    EventBus.$on('showDeletePopup', data => {
+      this.show = data.show
+      this.idItem = data.id
     })
   },
   watch: {

@@ -35,6 +35,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 //set folder public as static folder for static file
 app.use('/assets',express.static(__dirname + '/public'));
+//CORS
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, x-access-token, Content-Type, authorization, Authorization, Accept"
+  );
+  res.header("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS");
+  next();
+});
+
 
 //route for homepage
 app.get('/',(req, res) => {
@@ -45,10 +56,8 @@ app.get('/',(req, res) => {
       complexity = computeComplexity(results[entry].passwd_value)
       results[entry].passwd_level = complexity
       console.log(results[entry]);
-    } 
-    res.render('product_view',{
-      results: results
-    });
+    }
+    res.status(200).send({"result" : results});
   });
 });
 
@@ -111,36 +120,36 @@ function anssiJudgment(_nbLow, _nbUpp, _nbDig, _nbSpec){
   var length = _nbDig + _nbLow + _nbSpec + _nbUpp;
   if (length <= 9)
     return "baby"
-  
-  else if ( length > 9 
-            && length <= 15 
+
+  else if ( length > 9
+            && length <= 15
             && _nbLow > 0
-            && _nbUpp > 0 
-            && _nbDig > 0 
+            && _nbUpp > 0
+            && _nbDig > 0
             && _nbSpec > 0)
     return "child"
-  
-  else if ( length == 16 
+
+  else if ( length == 16
             && _nbLow == 0
-            && _nbUpp > 0 
-            && _nbDig > 0 
+            && _nbUpp > 0
+            && _nbDig > 0
             && _nbSpec == 0)
     return "genins"
-  
-  else if ( length == 16 
+
+  else if ( length == 16
             && _nbLow > 0
-            && _nbUpp > 0 
-            && _nbDig > 0 
+            && _nbUpp > 0
+            && _nbDig > 0
             && _nbSpec > 0)
     return "warrior"
-  
-  else if ( length > 16 
+
+  else if ( length > 16
       && _nbLow > 0
-      && _nbUpp > 0 
-      && _nbDig > 0 
+      && _nbUpp > 0
+      && _nbDig > 0
       && _nbSpec > 0)
     return "God"
-  
+
   else
     return "child"
 }
@@ -153,7 +162,7 @@ function countLowerCase(passwd){
     else
       continue;
   }
-  return nb;  
+  return nb;
 }
 
 function countUpperCase(passwd){
@@ -165,7 +174,7 @@ function countUpperCase(passwd){
     else
       continue;
   }
-  return nb;  
+  return nb;
 }
 
 function countDigit(passwd){
@@ -187,7 +196,7 @@ function countSpecial(passwd){
     else
       continue;
   }
-  return nb; 
+  return nb;
 }
 
 function isUpperCase(str)
