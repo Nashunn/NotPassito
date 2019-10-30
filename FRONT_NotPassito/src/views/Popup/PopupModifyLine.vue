@@ -1,5 +1,5 @@
 <template>
-  <!-- Popup Delete line -->
+  <!-- Popup Modify line -->
   <SlideYUpTransition :duration="animationDuration">
     <div class="modal fade"
          @click.self="closeModal"
@@ -22,7 +22,7 @@
 
     </div>
   </SlideYUpTransition>
-  <!-- Popup Delete line -->
+  <!-- Popup Modify line -->
 </template>
 
 <script>
@@ -30,7 +30,7 @@ import { SlideYUpTransition } from 'vue2-transitions'
 import { EventBus } from '../../event/eventBus'
 
 export default {
-  name: 'popupDeleteLine',
+  name: 'popupModifyLine',
   components: {
     SlideYUpTransition
   },
@@ -90,7 +90,7 @@ export default {
     }
   },
   mounted () {
-    EventBus.$on('showDeleteLinePopup', data => {
+    EventBus.$on('showModifyLinePopup', data => {
       this.show = data.show
       this.idItem = data.id
     })

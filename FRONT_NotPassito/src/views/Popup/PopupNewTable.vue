@@ -1,5 +1,5 @@
 <template>
-  <!-- Popup Delete line -->
+  <!-- Popup New Table -->
   <SlideYUpTransition :duration="animationDuration">
     <div class="modal fade"
          @click.self="closeModal"
@@ -13,7 +13,7 @@
         <div class="modal-content" :class="[gradient ? `bg-gradient-${gradient}` : '',modalContentClasses]">
           <!-- Body -->
           <div class="modal-body" :class="bodyClasses">
-            <slot name="body"></slot> ({{ idItem }})
+            <slot name="body"></slot>
             <v-btn @click="closeModal">CLOSE</v-btn>
           </div>
           <!-- End Body -->
@@ -22,7 +22,7 @@
 
     </div>
   </SlideYUpTransition>
-  <!-- Popup Delete line -->
+  <!-- Popup New Table -->
 </template>
 
 <script>
@@ -30,14 +30,13 @@ import { SlideYUpTransition } from 'vue2-transitions'
 import { EventBus } from '../../event/eventBus'
 
 export default {
-  name: 'popupDeleteLine',
+  name: 'popupNewTable',
   components: {
     SlideYUpTransition
   },
   data () {
     return {
-      show: false,
-      idItem: -1
+      show: false
     }
   },
   props: {
@@ -90,9 +89,8 @@ export default {
     }
   },
   mounted () {
-    EventBus.$on('showDeleteLinePopup', data => {
+    EventBus.$on('showNewTablePopup', data => {
       this.show = data.show
-      this.idItem = data.id
     })
   },
   watch: {

@@ -1,5 +1,6 @@
 import Sidebar from './SideBar.vue'
 import SidebarItem from './SidebarItem.vue'
+import SideBarItemSimple from './SideBarItemSimple.vue'
 
 const SidebarStore = {
   showSidebar: false,
@@ -37,6 +38,7 @@ const SidebarPlugin = {
     Vue.prototype.$sidebar = app.sidebarStore
     Vue.component('side-bar', Sidebar)
     Vue.component('sidebar-item', SidebarItem)
+    Vue.component('sidebar-item-simple', SideBarItemSimple)
   }
 }
 
