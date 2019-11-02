@@ -14,7 +14,9 @@
           <!-- Body -->
           <div class="modal-body" :class="bodyClasses">
             <slot name="body"></slot> ({{ idItem }})
-            <v-btn @click="closeModal">CLOSE</v-btn>
+            <div class="btn-body">
+              <v-btn @click="closeModal">Fermer</v-btn>
+            </div>
           </div>
           <!-- End Body -->
         </div>

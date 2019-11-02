@@ -1,5 +1,5 @@
 <template>
-  <!-- Popup Delete line -->
+  <!-- Popup Add Password -->
   <SlideYUpTransition :duration="animationDuration">
     <div class="modal fade"
          @click.self="closeModal"
@@ -13,9 +13,10 @@
         <div class="modal-content" :class="[gradient ? `bg-gradient-${gradient}` : '',modalContentClasses]">
           <!-- Body -->
           <div class="modal-body" :class="bodyClasses">
-            <slot name="body"></slot> ({{ idItem }})
+            <slot name="body"></slot>
             <div class="btn-body">
-              <v-btn @click="closeModal">Fermer</v-btn>
+              <v-btn class="bg-green text-white bold mx-1">Enregistrer</v-btn>
+              <v-btn @click="closeModal" class="bg-info text-white bold mx-1">Annuler</v-btn>
             </div>
           </div>
           <!-- End Body -->
@@ -24,7 +25,7 @@
 
     </div>
   </SlideYUpTransition>
-  <!-- Popup Delete line -->
+  <!-- Popup Add Password -->
 </template>
 
 <script>
@@ -32,14 +33,13 @@ import { SlideYUpTransition } from 'vue2-transitions'
 import { EventBus } from '../../event/eventBus'
 
 export default {
-  name: 'popupDeleteLine',
+  name: 'popupEditProfile',
   components: {
     SlideYUpTransition
   },
   data () {
     return {
-      show: false,
-      idItem: -1
+      show: false
     }
   },
   props: {
@@ -92,9 +92,8 @@ export default {
     }
   },
   mounted () {
-    EventBus.$on('showDeleteLinePopup', data => {
+    EventBus.$on('showEditProfile', data => {
       this.show = data.show
-      this.idItem = data.id
     })
   },
   watch: {
