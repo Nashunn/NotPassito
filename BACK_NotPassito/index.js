@@ -9,17 +9,24 @@ const bodyParser = require('body-parser');
 //use mysql database
 const mysql = require('mysql');
 const app = express();
-
+const cookieParser = require('cookie-parser')
 
 
 //Create Connection
-const conn = mysql.createConnection({
+/* const conn = mysql.createConnection({
   host: 'sql2.freemysqlhosting.net',
   port: '3306',
   user: 'sql2309997',
   password: 'kK5%zP6!',
   database: 'sql2309997'
+}); */
+const conn = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'Biow@Re22w!',
+  database: 'notpassito'
 });
+
 
 //connect to database
 conn.connect((err) =>{
@@ -35,48 +42,163 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 //set folder public as static folder for static file
 app.use('/assets',express.static(__dirname + '/public'));
+app.use(cookieParser());
 
 //route for homepage
 app.get('/',(req, res) => {
-  let sql = "SELECT * FROM network";
+  res.render('login_view',{
+    //results: results
+  });
+});
+
+//route for homepage
+app.get('/user/:user_id/:table_name/show',(req, res) => {
+  var userId = req.url.split("/")[2];
+  var tableName = req.url.split("/")[3];
+  let sql = "SELECT p.* FROM password AS p \
+            JOIN tablepassword AS tp on p.passwd_id = tp.passwd_id \
+            JOIN base AS b on b.base_tableid = tp.table_id \
+            JOIN user AS u on u.user_id = b.base_userid \
+            WHERE u.user_id = "+userId+" AND tp.table_name = '"+tableName+"'";
+            console.log("Test SQL "+sql);
   let query = conn.query(sql, (err, results) => {
     if(err) throw err;
+    console.log(results);
     for (entry in results){
       complexity = computeComplexity(results[entry].passwd_value)
       results[entry].passwd_level = complexity
-      console.log(results[entry]);
-    } 
+    }
     res.render('product_view',{
       results: results
     });
+    //res.send(results);
+  });
+});
+
+app.get('/user/:user_id/nbPass',(req, res) => {
+  var userId = req.url.split("/")[2];
+  //let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
+  let sql = "select count(p.passwd_id) as nb_pass \
+  from password as p \
+  join tablepassword as tp on p.passwd_id = tp.passwd_id \
+  join base as b on b.base_tableid = tp.table_id \
+  join user as u on u.user_id = b.base_userid \
+  WHERE u.user_id ="+userId;
+  console.log("Test SQL "+sql);
+  let query = conn.query(sql, (err, results) => {
+    if(err) throw err;
+    console.log(results);
+    res.send(results);
+  });
+});
+
+app.get('/user/:user_id/nbTable',(req, res) => {
+  var userId = req.url.split("/")[2];
+  //let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
+  let sql = "select count(distinct tp.table_id) as nb_table \
+  from tablepassword as tp \
+  join password as p on p.passwd_id = tp.passwd_id \
+  join base as b on b.base_tableid = tp.table_id \
+  join user as u on u.user_id = b.base_userid \
+  WHERE u.user_id ="+userId;
+  console.log("Test SQL "+sql);
+  let query = conn.query(sql, (err, results) => {
+    if(err) throw err;
+    console.log(results);
+    res.send(results);
   });
 });
 
 //route for insert data
-app.post('/save',(req, res) => {
-  let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
-  let sql = "INSERT INTO network SET ?";
+app.post('/connect',(req, res) => {
+  let data = {user_email: req.body.user_email, user_password: req.body.user_password};
+  let sql = "SELECT * FROM user WHERE user_email='"+req.body.user_email+"' AND user_password='"+req.body.user_password+"'";
+  let query = conn.query(sql, data,(err, results) => {
+    if(err) throw err;
+    else if (results.length == 0){
+      console.log("NO");
+    }
+    else{
+      var userId = results[0].user_id;
+      let sql_tableUser = "SELECT DISTINCT tp.table_name FROM tablepassword AS tp \
+      JOIN base AS b on b.base_tableid = tp.table_id \
+      JOIN user AS u ON u.user_id = b.base_userid \
+      WHERE u.user_id ="+userId;
+      let query = conn.query(sql_tableUser, data,(err, results) => {
+        for (entry in results){
+          results[entry].user_id = userId;
+        }
+        console.log(results);
+        /* res.render('product_view',{
+          results: results
+        }); */
+        res.send(results);
+      });
+    }
+  });
+});
+
+app.post('/registration',(req, res) => {
+  let data = {user_firstname: req.body.user_firstname, user_lastname: req.body.user_lastname, user_email: req.body.user_email, user_password: req.body.user_password};
+  let sql = "INSERT INTO user SET ?"
+  console.log("Test SQL "+sql);
   let query = conn.query(sql, data,(err, results) => {
     if(err) throw err;
     res.redirect('/');
   });
 });
 
+//route for insert data
+app.post('/user/:user_id/:table_name/save',(req, res) => {
+  var userId = req.url.split("/")[2];
+  var tableName = req.url.split("/")[3];
+  var userUrlShow = "/" + req.url.split("/")[1] + "/" + req.url.split("/")[2] + "/" + req.url.split("/")[3]+ "/show";
+
+  let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
+  let sql = "INSERT INTO password p \
+  JOIN tablepassword tp on tp.passwd_id = p.passwd_id \
+  JOIN base b on b.base_tableid = tp.table_id \
+  JOIN user u on u.user_id = b.base_userid SET \
+  WHERE u.user_id = " + userId +" AND tp.table_name = '"+tableName+"';"
+  console.log("Test SQL "+sql);
+  let query = conn.query(sql, data,(err, results) => {
+    if(err) throw err;
+    res.redirect(userUrlShow);
+  });
+});
+
 //route for update data
-app.post('/update',(req, res) => {
-  let sql = "UPDATE network SET passwd_name='"+req.body.passwd_name+"', passwd_user='"+req.body.passwd_user+"', passwd_value='"+req.body.passwd_value+"' WHERE passwd_id="+req.body.id;
+app.post('/user/:user_id/:table_name/update',(req, res) => {
+  var userId = req.url.split("/")[2];
+  var tableName = req.url.split("/")[3];
+  var userUrlShow = "/" + req.url.split("/")[1] + "/" + req.url.split("/")[2] + "/" + req.url.split("/")[3]+ "/show";
+
+  let sql = "UPDATE password p \
+  JOIN tablepassword tp on tp.passwd_id = p.passwd_id \
+  JOIN base b on b.base_tableid = tp.table_id \
+  JOIN user u on u.user_id = b.base_userid \
+  SET passwd_name='"+req.body.passwd_name+"', \
+  passwd_user='"+req.body.passwd_user+"', \
+  passwd_value='"+req.body.passwd_value+"'\
+  WHERE u.user_id = " + userId +" AND tp.table_name = '"+tableName+"';"
+
+  console.log(sql);
   let query = conn.query(sql, (err, results) => {
     if(err) throw err;
-    res.redirect('/');
+    res.redirect(userUrlShow);
   });
 });
 
 //route for delete data
-app.post('/delete',(req, res) => {
-  let sql = "DELETE FROM network WHERE passwd_id="+req.body.passwd_id+"";
+app.post('/user/:user_id/:table_name/delete',(req, res) => {
+  var userId = req.url.split("/")[2];
+  var tableName = req.url.split("/")[3];
+  var userUrlShow = "/" + req.url.split.split("/")[1] + "/" + req.url.split.split("/")[2] + "/" + req.url.split.split("/")[3]+ "/show";
+  let sql = "DELETE FROM password WHERE passwd_id="+req.body.passwd_id;
+  console.log("SQL : "+sql);
   let query = conn.query(sql, (err, results) => {
     if(err) throw err;
-      res.redirect('/');
+    res.redirect(userUrlShow);
   });
 });
 
@@ -84,9 +206,6 @@ app.post('/delete',(req, res) => {
 app.listen(8000, () => {
   console.log('Server is running at port 8000');
 });
-
-/* var stringTest = "AdRoniS123!J3d^qQ";
-console.log(computeComplexity(stringTest)) */
 
 function computeComplexity(passwd){
   var nbLow = 0;
