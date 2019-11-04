@@ -11,6 +11,9 @@ const mysql = require('mysql');
 const app = express();
 const cookieParser = require('cookie-parser')
 
+//====================================
+// SERVER (PART 1)
+//====================================
 
 //Create Connection
 /* const conn = mysql.createConnection({
@@ -26,7 +29,6 @@ const conn = mysql.createConnection({
   password: 'Biow@Re22w!',
   database: 'notpassito'
 });
-
 
 //connect to database
 conn.connect((err) =>{
@@ -56,70 +58,21 @@ app.use(function (req, res, next) {
 app.use(cookieParser());
 
 //route for homepage
-app.get('/',(req, res) => {
+/*app.get('/',(req, res) => {
   res.render('login_view',{
     //results: results
   });
-});
+});*/
 
-//route for homepage
-app.get('/user/:user_id/:table_name/show',(req, res) => {
-  var userId = req.url.split("/")[2];
-  var tableName = req.url.split("/")[3];
-  let sql = "SELECT p.* FROM password AS p \
-            JOIN tablepassword AS tp on p.passwd_id = tp.passwd_id \
-            JOIN base AS b on b.base_tableid = tp.table_id \
-            JOIN user AS u on u.user_id = b.base_userid \
-            WHERE u.user_id = "+userId+" AND tp.table_name = '"+tableName+"'";
-            console.log("Test SQL "+sql);
-  let query = conn.query(sql, (err, results) => {
-    if(err) throw err;
-    console.log(results);
+//====================================
+// ROUTES
+//====================================
 
-    for (entry in results){
-      complexity = computeComplexity(results[entry].passwd_value)
-      results[entry].passwd_level = complexity
-    }
+//****************
+// USER
+//****************
 
-    res.send(results);
-  });
-});
-
-app.get('/user/:user_id/nbPass',(req, res) => {
-  var userId = req.url.split("/")[2];
-  //let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
-  let sql = "select count(p.passwd_id) as nb_pass \
-  from password as p \
-  join tablepassword as tp on p.passwd_id = tp.passwd_id \
-  join base as b on b.base_tableid = tp.table_id \
-  join user as u on u.user_id = b.base_userid \
-  WHERE u.user_id ="+userId;
-  console.log("Test SQL "+sql);
-  let query = conn.query(sql, (err, results) => {
-    if(err) throw err;
-    console.log(results);
-    res.send(results);
-  });
-});
-
-app.get('/user/:user_id/nbTable',(req, res) => {
-  var userId = req.url.split("/")[2];
-  //let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
-  let sql = "select count(distinct tp.table_id) as nb_table \
-  from tablepassword as tp \
-  join password as p on p.passwd_id = tp.passwd_id \
-  join base as b on b.base_tableid = tp.table_id \
-  join user as u on u.user_id = b.base_userid \
-  WHERE u.user_id ="+userId;
-  console.log("Test SQL "+sql);
-  let query = conn.query(sql, (err, results) => {
-    if(err) throw err;
-    console.log(results);
-    res.send(results);
-  });
-});
-
-//route for insert data
+// Connect user and return his password's tables and his ID
 app.post('/connect',(req, res) => {
   let data = {user_email: req.body.user_email, user_password: req.body.user_password};
   let sql = "SELECT * FROM user WHERE user_email='"+req.body.user_email+"' AND user_password='"+req.body.user_password+"'";
@@ -148,6 +101,7 @@ app.post('/connect',(req, res) => {
   });
 });
 
+// Create a new account
 app.post('/registration',(req, res) => {
   let data = {user_firstname: req.body.user_firstname, user_lastname: req.body.user_lastname, user_email: req.body.user_email, user_password: req.body.user_password};
   let sql = "INSERT INTO user SET ?"
@@ -158,26 +112,56 @@ app.post('/registration',(req, res) => {
   });
 });
 
-//route for insert data
-app.post('/user/:user_id/:table_name/save',(req, res) => {
+//******************
+// PASSWORD TABLES
+//******************
+
+// Return the table of the user
+app.get('/user/:user_id/:table_name/show',(req, res) => {
   var userId = req.url.split("/")[2];
   var tableName = req.url.split("/")[3];
-  var userUrlShow = "/" + req.url.split("/")[1] + "/" + req.url.split("/")[2] + "/" + req.url.split("/")[3]+ "/show";
-
-  let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
-  let sql = "INSERT INTO password p \
-  JOIN tablepassword tp on tp.passwd_id = p.passwd_id \
-  JOIN base b on b.base_tableid = tp.table_id \
-  JOIN user u on u.user_id = b.base_userid SET \
-  WHERE u.user_id = " + userId +" AND tp.table_name = '"+tableName+"';"
-  console.log("Test SQL "+sql);
-  let query = conn.query(sql, data,(err, results) => {
+  let sql = "SELECT p.* FROM password AS p \
+            JOIN tablepassword AS tp on p.passwd_id = tp.passwd_id \
+            JOIN base AS b on b.base_tableid = tp.table_id \
+            JOIN user AS u on u.user_id = b.base_userid \
+            WHERE u.user_id = "+userId+" AND tp.table_name = '"+tableName+"'";
+            console.log("Test SQL "+sql);
+  let query = conn.query(sql, (err, results) => {
     if(err) throw err;
-    res.redirect(userUrlShow);
+    console.log(results);
+
+    for (entry in results){
+      complexity = computeComplexity(results[entry].passwd_value)
+      results[entry].passwd_level = complexity
+    }
+
+    res.send(results);
   });
 });
 
-//route for update data
+// Get the nb of tables of an user
+app.get('/user/:user_id/nbTable',(req, res) => {
+  var userId = req.url.split("/")[2];
+  //let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
+  let sql = "select count(distinct tp.table_id) as nb_table \
+  from tablepassword as tp \
+  join password as p on p.passwd_id = tp.passwd_id \
+  join base as b on b.base_tableid = tp.table_id \
+  join user as u on u.user_id = b.base_userid \
+  WHERE u.user_id ="+userId;
+  console.log("Test SQL "+sql);
+  let query = conn.query(sql, (err, results) => {
+    if(err) throw err;
+    console.log(results);
+    res.send(results);
+  });
+});
+
+//******************
+// PASSWORD 
+//******************
+
+// Edit a password in the table given for the user
 app.post('/user/:user_id/:table_name/update',(req, res) => {
   var userId = req.url.split("/")[2];
   var tableName = req.url.split("/")[3];
@@ -199,7 +183,26 @@ app.post('/user/:user_id/:table_name/update',(req, res) => {
   });
 });
 
-//route for delete data
+// Add a password in the given table for the given user
+app.post('/user/:user_id/:table_name/save',(req, res) => {
+  var userId = req.url.split("/")[2];
+  var tableName = req.url.split("/")[3];
+  var userUrlShow = "/" + req.url.split("/")[1] + "/" + req.url.split("/")[2] + "/" + req.url.split("/")[3]+ "/show";
+
+  let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
+  let sql = "INSERT INTO password p \
+  JOIN tablepassword tp on tp.passwd_id = p.passwd_id \
+  JOIN base b on b.base_tableid = tp.table_id \
+  JOIN user u on u.user_id = b.base_userid SET \
+  WHERE u.user_id = " + userId +" AND tp.table_name = '"+tableName+"';"
+  console.log("Test SQL "+sql);
+  let query = conn.query(sql, data,(err, results) => {
+    if(err) throw err;
+    res.redirect(userUrlShow);
+  });
+});
+
+// Delete a password in the given table of the given user
 app.post('/user/:user_id/:table_name/delete',(req, res) => {
   var userId = req.url.split("/")[2];
   var tableName = req.url.split("/")[3];
@@ -212,10 +215,37 @@ app.post('/user/:user_id/:table_name/delete',(req, res) => {
   });
 });
 
+// Get the number of password of an user
+app.get('/user/:user_id/nbPass',(req, res) => {
+  var userId = req.url.split("/")[2];
+  //let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
+  let sql = "select count(p.passwd_id) as nb_pass \
+  from password as p \
+  join tablepassword as tp on p.passwd_id = tp.passwd_id \
+  join base as b on b.base_tableid = tp.table_id \
+  join user as u on u.user_id = b.base_userid \
+  WHERE u.user_id ="+userId;
+  console.log("Test SQL "+sql);
+  let query = conn.query(sql, (err, results) => {
+    if(err) throw err;
+    console.log(results);
+    res.send(results);
+  });
+});
+
+//====================================
+// SERVER (PART 2)
+//====================================
+
 //server listening
 app.listen(8000, () => {
   console.log('Server is running at port 8000');
 });
+
+
+//====================================
+// FUNCTIONS
+//====================================
 
 function computeComplexity(passwd){
   var nbLow = 0;
