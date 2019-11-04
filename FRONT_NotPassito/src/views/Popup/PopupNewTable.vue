@@ -14,9 +14,7 @@
           <!-- Body -->
           <div class="modal-body" :class="bodyClasses">
             <slot name="body"></slot>
-            <div class="btn-body">
-              <v-btn @click="closeModal">Fermer</v-btn>
-            </div>
+            <v-btn @click="closeModal">CLOSE</v-btn>
           </div>
           <!-- End Body -->
         </div>

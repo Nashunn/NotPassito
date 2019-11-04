@@ -1,10 +1,5 @@
 <template>
     <div>
-      <!-- Popup -->
-      <popupEditProfile>
-        <template slot="body">Edit Profile ? </template>
-      </popupEditProfile>
-      <!-- End Popup -->
         <base-header class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
                      style="min-height: 600px; background-image: url(img/np/user.png); background-size: cover; background-position: center top;">
             <!-- Mask -->
@@ -36,7 +31,7 @@
                         </div>
                         <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
                             <div class="d-flex flex-row-reverse">
-                                <v-btn @click="showEditProfile()" size="sm" class="bg-info text-white bold mx-1 px-3 py-1">Edit</v-btn>
+                                <base-button size="sm" type="info" class="px-3 py-1">Edit</base-button>
                             </div>
                         </div>
                         <div class="card-body pt-0 pt-md-4">
@@ -87,20 +82,8 @@
     </div>
 </template>
 <script>
-import { EventBus } from '../event/eventBus'
-import PopupEditProfile from '../views/Popup/PopupEditProfile'
-
 export default {
-  name: 'user-profile',
-  components: {
-    PopupEditProfile
-  },
-  methods: {
-    showEditProfile () {
-      this.showPopup = true
-      EventBus.$emit('showEditProfile', { 'show': this.showPopup })
-    }
-  }
+  name: 'user-profile'
 }
 </script>
 <style></style>
