@@ -11,21 +11,25 @@ const mysql = require('mysql');
 const app = express();
 const cookieParser = require('cookie-parser')
 
+var nbPasswd = 0;
 
 //Create Connection
-/* const conn = mysql.createConnection({
+const conn = mysql.createConnection({
   host: 'sql2.freemysqlhosting.net',
   port: '3306',
-  user: 'sql2309997',
-  password: 'kK5%zP6!',
-  database: 'sql2309997'
-}); */
-const conn = mysql.createConnection({
+  user: 'sql2310777',
+  password: 'uY3*aU8%',
+  database: 'sql2310777'
+});
+
+/* const conn = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'Biow@Re22w!',
   database: 'notpassito'
-});
+}); */
+
+//mysql -u sql2310777 -p'uY3*aU8%' -h sql2.freemysqlhosting.net -P 3306 -D sql2310777
 
 
 //connect to database
@@ -43,6 +47,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //set folder public as static folder for static file
 app.use('/assets',express.static(__dirname + '/public'));
 app.use(cookieParser());
+
+//nbPasswd = getNumberPasswd();
+//console.log(nbPasswd);
 
 //route for homepage
 app.get('/',(req, res) => {
@@ -105,6 +112,7 @@ app.get('/user/:user_id/nbTable',(req, res) => {
   let query = conn.query(sql, (err, results) => {
     if(err) throw err;
     console.log(results);
+    console.log("Query : " + query);
     res.send(results);
   });
 });
@@ -155,16 +163,30 @@ app.post('/user/:user_id/:table_name/save',(req, res) => {
   var userUrlShow = "/" + req.url.split("/")[1] + "/" + req.url.split("/")[2] + "/" + req.url.split("/")[3]+ "/show";
 
   let data = {passwd_name: req.body.passwd_name, passwd_user: req.body.passwd_user, passwd_value: req.body.passwd_value};
-  let sql = "INSERT INTO password p \
-  JOIN tablepassword tp on tp.passwd_id = p.passwd_id \
-  JOIN base b on b.base_tableid = tp.table_id \
-  JOIN user u on u.user_id = b.base_userid SET \
-  WHERE u.user_id = " + userId +" AND tp.table_name = '"+tableName+"';"
+  
+  // 1) Insert dans password
+  let sql = "INSERT INTO password SET ?";
+  
+  // 2) Récupérer l'id de la passwordtable et créé une jointure dans passwordtable entre password et passwordtable
+  // let sql = "INSERT INTO tablepassword ";
+  // select distinct tp.table_id FROM tablepassword as tp join base as b on b.base_tableid = tp.table_id join user as u on u.user_id = b.base_userid WHERE u.user_id = 1 and tp.table_name = 'network';
+  
+  // 3) Récupérer l'id de la base et créé une jointure dans la base entre user base et passwordtable
+  
+  /* let sql = "select count(passwd_id) as nb_passwd from password";
+  console.log("SQL : "+sql);
+  let query = conn.query(sql, (err, results) => {
+    if(err) throw err;
+    console.log("Result :" + results);
+    console.log("Query : " + query);
+    return results;
+  }); */
   console.log("Test SQL "+sql);
   let query = conn.query(sql, data,(err, results) => {
     if(err) throw err;
-    res.redirect(userUrlShow);
   });
+
+  
 });
 
 //route for update data
@@ -206,6 +228,17 @@ app.post('/user/:user_id/:table_name/delete',(req, res) => {
 app.listen(8000, () => {
   console.log('Server is running at port 8000');
 });
+
+function getNumberPasswd(){
+  let sql = "select count(passwd_id) as nb_passwd from password";
+  console.log("SQL : "+sql);
+  let query = conn.query(sql, (err, results) => {
+    if(err) throw err;
+    console.log("Result :" + results);
+    console.log("Query : " + query);
+    return results;
+  });
+}
 
 function computeComplexity(passwd){
   var nbLow = 0;
