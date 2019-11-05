@@ -90,7 +90,7 @@ export default {
     }
   },
   mounted () {
-    EventBus.$on('showDeletePopup', data => {
+    EventBus.$on('showDeleteLinePopup', data => {
       this.show = data.show
       this.idItem = data.id
     })

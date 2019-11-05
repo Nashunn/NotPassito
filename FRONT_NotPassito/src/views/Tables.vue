@@ -2,8 +2,11 @@
     <div>
       <!-- Popup -->
       <popupDeleteLine>
-        <template slot="body">Delete Line ?</template>
+        <template slot="body">Delete Line ? </template>
       </popupDeleteLine>
+      <popupModifyLine>
+        <template slot="body">Modify Line ? </template>
+      </popupModifyLine>
      <!-- End Popup -->
       <base-header type="gradient-blue" class="pb-6 pb-8 pt-5 pt-md-8"></base-header>
       <div class="mx-5">
@@ -27,12 +30,12 @@
                 <td>{{ pwd.passwd_name }}</td>
                 <td>{{ pwd.passwd_user }}</td>
                 <td>{{ pwd.passwd_value }}</td>
-                <td>url.com</td>
-                <td>xx/xx/xxxx</td>
-                <td>xx/xx/xxxx</td>
-                <td>xx/xx/xxxx</td>
+                <td>pwd.passwd_url</td>
+                <td>pwd.passwd_created</td>
+                <td>pwd.passwd_modified</td>
+                <td>pwd.passwd_expired</td>
                 <td>
-                  <v-btn @click="showModified()" class="bg-info text-white bold mx-1" small>Modifier</v-btn>
+                  <v-btn @click="showModified('IDItem')" class="bg-info text-white bold mx-1" small>Modifier</v-btn>
                   <v-btn @click="showDelete('IDItem')" class="bg-danger text-white bold mx-1" small>Supprimer</v-btn>
                 </td>
               </tr>
@@ -46,6 +49,7 @@
 import { EventBus } from '../event/eventBus'
 import { HTTP } from '../http-constants'
 import PopupDeleteLine from './Popup/PopupDeleteLine'
+import PopupModifyLine from './Popup/PopupModifyLine'
 
 export default {
   name: 'base-nav',
@@ -55,7 +59,8 @@ export default {
     }
   },
   components: {
-    PopupDeleteLine
+    PopupDeleteLine,
+    PopupModifyLine
   },
   props: {
     title: {
@@ -71,7 +76,11 @@ export default {
   methods: {
     showDelete (id) {
       this.showPopup = true
-      EventBus.$emit('showDeletePopup', { 'show': this.showPopup, 'id': id })
+      EventBus.$emit('showDeleteLinePopup', { 'show': this.showPopup, 'id': id })
+    },
+    showModified (id) {
+      this.showPopup = true
+      EventBus.$emit('showModifyLinePopup', { 'show': this.showPopup, 'id': id })
     },
     getPwds () {
       HTTP.get('').then(response => {
