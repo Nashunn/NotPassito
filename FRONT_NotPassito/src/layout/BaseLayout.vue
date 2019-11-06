@@ -49,6 +49,8 @@
 import DashboardNavbar from './DashboardNavbar.vue'
 import ContentFooter from './ContentFooter.vue'
 import popupNewTable from '../views/Popup/PopupNewTable'
+import store from '../store'
+import router from '../router'
 import { EventBus } from '../event/eventBus'
 import { FadeTransition } from 'vue2-transitions'
 
@@ -64,6 +66,9 @@ export default {
       sidebarBackground: 'vue' // vue|blue|orange|green|red|primary
     }
   },
+  created () {
+    this.checkUserConnection()
+  },
   methods: {
     toggleSidebar () {
       if (this.$sidebar.showSidebar) {
@@ -72,8 +77,15 @@ export default {
     },
     showNewTable () {
       this.showPopup = true
-      console.log('OKOKOK')
       EventBus.$emit('showNewTablePopup', { 'show': this.showPopup })
+    },
+    checkUserConnection () {
+      if (store.state.usr.name) {
+        console.log('User is connected')
+      } else {
+        console.log('User is NOT connected')
+        router.push('/login')
+      }
     }
   }
 }

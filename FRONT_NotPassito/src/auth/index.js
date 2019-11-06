@@ -1,20 +1,20 @@
-import store from './../store'
-import { EventBusModal } from '../events/'
-import { HTTP } from '../HTTP'
+import store from '../store'
+import { HTTP } from '../http-constants'
 
 export default {
   user: {},
-  login (context, creds, redirect, isProd) {
-    HTTP.post((isProd ? '/producer' : '') + '/login', { email: creds.email, password: creds.password }, {}).then(async response => {
-      localStorage.setItem('todo', response.todo)
-      await this.getAccount(isProd)
-      EventBusModal.$emit('todo', response.todo)
+  login (creds) {
+    HTTP.post('/connect', { user_email: creds.email, user_password: creds.password }, {}).then(response => {
+      localStorage.setItem('currentUsr', response.results)
+      console.log('CA PASSE')
+      console.log(response.results)
       return true
-    }).catch(function (error) {
-      console.log(error)
-      EventBusModal.$emit('todo', true)
-      return false
-    })
+    }).catch(
+      function (error) {
+        console.log(error)
+        return false
+      }
+    )
   },
   logout () {
     localStorage.removeItem('todo')

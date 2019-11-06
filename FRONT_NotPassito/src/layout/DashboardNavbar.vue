@@ -38,8 +38,6 @@
 </template>
 <script>
 
-import store from './../store'
-
 export default {
   name: 'dashboard-navbar',
   data () {
@@ -51,13 +49,6 @@ export default {
         email: '',
         password: ''
       }
-    }
-  },
-  created () {
-    if (store.state.usr.name) {
-      console.log('User is logged')
-    } else {
-      console.log('User is NOT logged')
     }
   },
   methods: {
