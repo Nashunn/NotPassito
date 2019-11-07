@@ -56,8 +56,7 @@ export default {
       if (this.model.email !== '' && this.model.password !== '') {
         this.errFields = false
         auth.login(this.model)
-      }
-      else {
+      } else {
         this.errFields = true
       }
     }

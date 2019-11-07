@@ -80,7 +80,7 @@ export default {
       EventBus.$emit('showNewTablePopup', { 'show': this.showPopup })
     },
     checkUserConnection () {
-      if (store.state.usr.name) {
+      if (store.state.usr.user_email) {
         console.log('User is connected')
       } else {
         console.log('User is NOT connected')
