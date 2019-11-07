@@ -14,20 +14,20 @@ const cookieParser = require('cookie-parser')
 var nbPasswd = 0;
 
 //Create Connection
-const conn = mysql.createConnection({
+/* const conn = mysql.createConnection({
   host: 'sql2.freemysqlhosting.net',
   port: '3306',
   user: 'sql2310777',
   password: 'uY3*aU8%',
   database: 'sql2310777'
-});
+}); */
 
-/* const conn = mysql.createConnection({
+const conn = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'Biow@Re22w!',
   database: 'notpassito'
-}); */
+});
 
 //mysql -u sql2310777 -p'uY3*aU8%' -h sql2.freemysqlhosting.net -P 3306 -D sql2310777
 
@@ -46,6 +46,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 //set folder public as static folder for static file
 app.use('/assets',express.static(__dirname + '/public'));
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, x-access-token, Content-Type, authorization, Authorization, Accept"
+  );
+  res.header("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS");
+  next();
+});
+
 app.use(cookieParser());
 
 
@@ -232,10 +243,78 @@ app.post('/user/:user_id/:table_name/update',(req, res) => {
 app.post('/user/:user_id/:table_name/delete',(req, res) => {
   var userId = req.url.split("/")[2];
   var tableName = req.url.split("/")[3];
-  var userUrlShow = "/" + req.url.split.split("/")[1] + "/" + req.url.split.split("/")[2] + "/" + req.url.split.split("/")[3]+ "/show";
-
+  var userUrlShow = "/" + req.url.split("/")[1] + "/" + req.url.split("/")[2] + "/" + req.url.split("/")[3]+ "/show";
+  let data = {passwd_id: Number(req.body.passwd_id)};
   // 1) Récupérer l'id associé à la table passwd à l'user et la bonne table
   // Requête : select table_id from tablepassword as tp join password as p on p.passwd_id = tp.passwd_id join base as b on b.base_tableid = tp.table_id join user as u on u.user_id = b.base_userid WHERE u.user_id = 1 AND tp.table_name = 'network' and p.passwd_id=3;
+  let sqlGetID = "select table_id from tablepassword as tp \
+  join password as p on p.passwd_id = tp.passwd_id \
+  join base as b on b.base_tableid = tp.table_id \
+  join user as u on u.user_id = b.base_userid \
+  WHERE u.user_id = " + userId + " AND tp.table_name = '"+tableName+"' and p.passwd_id="+data.passwd_id;
+  let queryGetID = conn.query(sqlGetID, data, (err, results) => {
+    if(err) throw err;
+    else{
+      data.tableid = results[0].table_id;
+      
+      let sqlGetNbEntry = "select count(table_id) as nb_entry from tablepassword where table_id ="+data.tableid;
+      let queryGetNbEntry = conn.query(sqlGetNbEntry, data, (err, results) => {
+        if(err) throw err;
+        else{
+          data.nbentry = results[0].nb_entry;
+          // Si c'est la dernière entrée pour cette table de password
+          if (data.nbentry == 1){
+            let sqlDelete = "DELETE FROM password WHERE passwd_id="+data.passwd_id;
+            let query = conn.query(sqlDelete, (err, results) => {
+              if(err) throw err;
+              else{
+                res.return(200);
+              }
+            });
+          }
+          // Sinon, il faudra recréer le lien entre user base et table supprimé par le delete on cascade
+          else {
+            console.log("DEBUG nb entry OK");
+            let sql_FindTablePasswd = "SELECT b.* from base as b \
+            JOIN tablepassword as tp on b.base_tableid = tp.table_id \
+            JOIN user as u on u.user_id = b.base_userid \
+            WHERE tp.passwd_id = "+data.passwd_id;
+            let query_FindTablePasswd = conn.query(sql_FindTablePasswd, data,(err, resultsFindTable) => {
+              if(err) throw err;
+              else{
+                console.log("DEBUG FindTablePasswd OK");
+                data.base_id = resultsFindTable[0].base_id;
+                data.base_name = resultsFindTable[0].base_name;
+                data.base_userid = resultsFindTable[0].base_userid;
+                data.base_tableid = resultsFindTable[0].base_tableid;
+                console.log("Data :", data);
+                let sqlDelete = "DELETE FROM password WHERE passwd_id="+data.passwd_id;
+                let query = conn.query(sqlDelete, data, (err, results) => {
+                  if(err) throw err;
+                  else{
+                    console.log("DEBUG Delete OK");
+                    console.log("Data IN Delete :", data);
+                    //3 Créé une jointure entre password et table tablepassword
+                    let sqlAddJoin = "INSERT INTO `base` (`base_id`, `base_name`, `base_userid`, `base_tableid`) VALUES \
+                    ("+data.base_id+", '"+data.base_name+"', "+data.base_userid+", + "+data.base_tableid+")";
+                    let queryAddJoin = conn.query(sqlAddJoin, data, (err, results) => {
+                      if(err) throw err;
+                      else{
+                        console.log("DEBUG Insert OK");
+                        res.send(200);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        }
+        //res.redirect(userUrlShow);
+      });
+    }
+    //res.redirect(userUrlShow);
+  });
 
   // 2) Récupérer le nombre d'entrée dans la table
   // Requête : select count(table_id) as nb_entry from tablepassword where table_id =1;
@@ -245,12 +324,12 @@ app.post('/user/:user_id/:table_name/delete',(req, res) => {
   // Lancé le delete
   // Rajoute le lien dans la table base -> INSERT INTO `base` (`base_id`, `base_name`, `base_userid`, `base_tableid`) VALUES (1, 'base_adonis', 1, 1); 
 
-  let sql = "DELETE FROM password WHERE passwd_id="+req.body.passwd_id;
+  /* let sql = "DELETE FROM password WHERE passwd_id="+req.body.passwd_id;
   console.log("SQL : "+sql);
   let query = conn.query(sql, (err, results) => {
     if(err) throw err;
     res.redirect(userUrlShow);
-  });
+  }); */
 });
 
 //server listening
