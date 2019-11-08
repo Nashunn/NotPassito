@@ -19,9 +19,7 @@
                 <th class="text-left">User</th>
                 <th class="text-left">Password</th>
                 <th class="text-left">URL</th>
-                <th class="text-left">Created</th>
-                <th class="text-left">Modified</th>
-                <th class="text-left">Expired</th>
+                <th class="text-left">Level</th>
                 <th class="text-left">Actions</th>
               </tr>
             </thead>
@@ -30,13 +28,11 @@
                 <td>{{ pwd.passwd_name }}</td>
                 <td>{{ pwd.passwd_user }}</td>
                 <td>{{ pwd.passwd_value }}</td>
-                <td>pwd.passwd_url</td>
-                <td>pwd.passwd_created</td>
-                <td>pwd.passwd_modified</td>
-                <td>pwd.passwd_expired</td>
+                <td>url.com</td>
+                <td>{{ pwd.passwd_level }}</td>
                 <td>
-                  <v-btn @click="showModified('IDItem')" class="bg-info text-white bold mx-1" small>Modifier</v-btn>
-                  <v-btn @click="showDelete('IDItem')" class="bg-danger text-white bold mx-1" small>Supprimer</v-btn>
+                  <v-btn @click="showModified(pwd.passwd_id)" class="bg-info text-white bold mx-1" small>Modifier</v-btn>
+                  <v-btn @click="showDelete(pwd.passwd_id)" class="bg-danger text-white bold mx-1" small>Supprimer</v-btn>
                 </td>
               </tr>
             </tbody>
@@ -48,6 +44,7 @@
 <script>
 import { EventBus } from '../event/eventBus'
 import { HTTP } from '../http-constants'
+import store from '../store'
 import PopupDeleteLine from './Popup/PopupDeleteLine'
 import PopupModifyLine from './Popup/PopupModifyLine'
 
@@ -55,6 +52,7 @@ export default {
   name: 'base-nav',
   data () {
     return {
+      usr: {},
       pwds: []
     }
   },
@@ -70,8 +68,9 @@ export default {
     }
   },
   mounted () {
+    this.usr = store.state.usr
     // Get pwds lines
-    this.getPwds()
+    this.getPwds(this.$route.params.tablename)
   },
   methods: {
     showDelete (id) {
@@ -82,9 +81,9 @@ export default {
       this.showPopup = true
       EventBus.$emit('showModifyLinePopup', { 'show': this.showPopup, 'id': id })
     },
-    getPwds () {
-      HTTP.get('').then(response => {
-        this.pwds = response.data.result
+    getPwds (tablename) {
+      HTTP.get('/user/' + this.usr.id + '/' + tablename + '/show').then(response => {
+        this.pwds = response.data
       })
     }
   }

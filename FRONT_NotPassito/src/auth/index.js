@@ -14,6 +14,12 @@ export default {
       this.user.lastname = response.data[0].user_lastname
       this.user.email = response.data[0].user_email
       this.user.authenticated = true
+      this.user.tables = []
+
+      // Get tables of users
+      response.data.forEach(function (e) {
+        this.user.tables.push(e.table_name)
+      }, this)
 
       await store.commit('instanceUser', this.user)
       await EventBus.$emit('connectActions')

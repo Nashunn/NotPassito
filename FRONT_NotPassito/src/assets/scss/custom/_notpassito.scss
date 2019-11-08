@@ -26,3 +26,11 @@
 .np-title {
   font-size: xx-large;
 }
+
+.np-clicker-block {
+  cursor: pointer
+}
+
+.np-clicker-block:hover {
+  box-shadow: 0px 0px 10px -5px lightblue;
+}

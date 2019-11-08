@@ -69,7 +69,6 @@ export default {
   },
   methods: {
     checkAuth () {
-      console.log('user : ' + auth.checkAuth())
       if (auth.checkAuth()) {
         router.push('/profile')
       }

@@ -15,7 +15,7 @@ export default new Router({
       component: BaseLayout,
       children: [
         {
-          path: '/tables',
+          path: '/tables/:tablename',
           name: 'tables',
           component: () => import('./views/Tables.vue')
         },

@@ -9,17 +9,19 @@
     <!-- Sidebar left -->
     <side-bar
       :background-color="sidebarBackground"
-      short-title="NotPassito"
-      title="NotPassito"
+      short-title=""
+      title=""
     >
       <template slot="links">
+        <div :key="table.id" v-for="table in usr.tables">
         <sidebar-item
           :link="{
-            name: 'Table exemple',
+            name: table,
             icon: 'ni ni-bullet-list-67 text-primary',
-            path: '/tables'
+            path: '/tables/' + table
           }"
         />
+        </div>
         <sidebar-item-simple @click.native="showNewTable()"
           name='Nouvelle table'
           icon='ni ni-fat-add text-red'
@@ -51,6 +53,7 @@ import ContentFooter from './ContentFooter.vue'
 import popupNewTable from '../views/Popup/PopupNewTable'
 import auth from '../auth'
 import router from '../router'
+import store from '../store'
 import { EventBus } from '../event/eventBus'
 import { FadeTransition } from 'vue2-transitions'
 
@@ -63,8 +66,12 @@ export default {
   },
   data () {
     return {
+      usr: {},
       sidebarBackground: 'vue' // vue|blue|orange|green|red|primary
     }
+  },
+  mounted () {
+    this.usr = store.state.usr
   },
   created () {
     this.checkAuth()
@@ -83,7 +90,6 @@ export default {
       EventBus.$emit('showNewTablePopup', { 'show': this.showPopup })
     },
     checkAuth () {
-      console.log('user : ' + auth.checkAuth())
       if (!auth.checkAuth()) {
         router.push('/login')
       }

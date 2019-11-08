@@ -9,7 +9,7 @@
                 <div class="row">
                     <div class="col-lg-7 col-md-10">
                         <h1 class="display-2 text-white">Hello !</h1>
-                        <p class="text-white mt-0 mb-5">This is your profile page. You can see your informations and your tables of password.</p>
+                        <p class="text-white mt-0 mb-5">Bienvenue sur ton profil ! Tu y trouveras les informations te concernant, ainsi que tes tables de mots de passe</p>
                     </div>
                 </div>
             </div>
@@ -64,15 +64,18 @@
                         <div slot="header" class="bg-white border-0">
                             <div class="row align-items-center">
                                 <div class="col-8">
-                                    <h3 class="mb-0">My Tables</h3>
+                                    <h3 class="mb-0">Mes tables</h3>
                                 </div>
                             </div>
                         </div>
                         <template>
-                            <div class="d-flex justify-content-between">
-                                <card class="col-lg-3">Table 1</card>
-                                <card class="col-lg-3">Table 2</card>
-                                <card class="col-lg-3">Table 3</card>
+                            <div class="d-flex justify-content-around">
+                                <div :key="table.id" v-for="table in usr.tables"
+                                    class="col-lg-3 p-0 np-clicker-block">
+                                    <div class="p-2 py-3 text-center bg-white border rounded" @click="redirectTable(table)" :title=table>
+                                        {{table}}
+                                    </div>
+                                </div>
                             </div>
                         </template>
                     </card>
@@ -83,6 +86,7 @@
 </template>
 <script>
 import store from '../store'
+import router from '../router'
 import { HTTP } from '../http-constants'
 
 export default {
@@ -109,6 +113,9 @@ export default {
       HTTP.get('/user/' + this.usr.id + '/nbPass').then(response => {
         this.nbPwds = response.data[0].nb_pass
       })
+    },
+    redirectTable (tablename) {
+      router.push('/tables/' + tablename)
     }
   }
 }
