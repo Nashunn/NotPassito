@@ -14,13 +14,10 @@
     >
       <template slot="links">
         <div :key="table.id" v-for="table in usr.tables">
-        <sidebar-item
-          :link="{
-            name: table,
-            icon: 'ni ni-bullet-list-67 text-primary',
-            path: '/tables/' + table
-          }"
-        />
+          <sidebar-item-simple @click.native="redirectSelectedTable(table)"
+            :name= table
+            icon='ni ni-bullet-list-67 text-primary'
+          />
         </div>
         <sidebar-item-simple @click.native="showNewTable()"
           name='Nouvelle table'
@@ -38,7 +35,7 @@
       <div @click="toggleSidebar">
         <fade-transition :duration="200" origin="center top" mode="out-in">
           <!-- Our view loaded by router -->
-          <router-view></router-view>
+          <router-view :key="$route.fullPath"></router-view>
         </fade-transition>
         <!-- Footer -->
         <content-footer v-if="!$route.meta.hideFooter"></content-footer>
@@ -93,6 +90,9 @@ export default {
       if (!auth.checkAuth()) {
         router.push('/login')
       }
+    },
+    redirectSelectedTable (table) {
+      router.push('/tables/' + table)
     }
   }
 }
