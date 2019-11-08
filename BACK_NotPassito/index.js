@@ -225,6 +225,62 @@ app.post('/inscription', (req, res) => {
   });
 });
 
+app.post('/user/:user_id/createTable', (req, res) => {
+  let data = { table_name: req.body.table_name};
+  data.userId = req.url.split("/")[2];
+  console.log("OK 0");
+  console.log("OK 1");
+    let sqlInsertTestData = "INSERT INTO `password` (`passwd_name`, `passwd_user`, `passwd_value`) VALUES ('Test', 'UserTest', 'PasswordTest');";
+    let query = conn.query(sqlInsertTestData, data, (err, results) => {
+      if (err) throw err;
+      else{
+        console.log("OK 2");
+        let sql_LastPasswd = "select passwd_id from password where passwd_id=(select max(passwd_id) from password)";
+        let query = conn.query(sql_LastPasswd, data, (err, results) => {
+          if (err) throw err;
+          else{
+            console.log("OK 3");
+            data.passwdId = results[0].passwd_id;
+            let sql_LastTable = "select max(table_id) as table_id from tablepassword";
+            let query = conn.query(sql_LastTable, data, (err, results) => {
+              if (err) throw err;
+              else{
+                console.log("OK 4");
+                data.tableId = results[0].table_id + 1;
+                console.log(data);
+                let sql_InsertTable = "INSERT INTO `tablepassword` (`table_id`, `passwd_id`, `table_name`) \
+                VALUES ("+data.tableId+", "+data.passwdId+", 'tableTest')";
+                let query = conn.query(sql_InsertTable, data, (err, results) => {
+                  if (err) throw err;
+                  else{
+                    let sql_LastBase = "select max(b.base_id) as base_id,  b.base_name \
+                    from base as b join user as u on u.user_id = base_userid \
+                    where u.user_id ="+data.userId;
+                    let query = conn.query(sql_LastBase, data, (err, results) => {
+                      if (err) throw err;
+                      else{
+                        data.baseId = results[0].base_id + 1;
+                        data.baseName = results[0].base_name;
+                        let sql_InsertInBase = "INSERT INTO `base` (`base_id`, `base_name`, `base_userid`, `base_tableid`) \
+                        VALUES ("+data.baseId+", '"+data.baseName+"', "+data.userId+", "+data.tableId+")";
+                        let query = conn.query(sql_InsertInBase, data, (err, results) => {
+                          if (err) throw err;
+                          else{
+                            res.send(200);
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+});
+
 
 //route for insert data
 app.post('/user/:user_id/:table_name/save', (req, res) => {
