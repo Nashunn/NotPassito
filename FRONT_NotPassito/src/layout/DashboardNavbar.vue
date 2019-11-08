@@ -13,7 +13,7 @@
                         <img alt="Image placeholder" src="img/np/user.png">
                       </span>
                       <div class="media-body ml-2 d-none d-lg-block">
-                          <span class="mb-0 text-sm font-weight-bold">Username</span>
+                          <span class="mb-0 text-sm font-weight-bold">{{usr.firstname}} {{usr.lastname}}</span>
                       </div>
                     </div>
 
@@ -26,10 +26,10 @@
                             <span>My profile</span>
                         </router-link>
                         <div class="dropdown-divider"></div>
-                        <router-link to="/profile" class="dropdown-item">
+                        <div @click="logoutUser()" class="dropdown-item">
                             <i class="ni ni-user-run"></i>
                             <span>Logout</span>
-                        </router-link>
+                        </div>
                     </template>
                 </base-dropdown>
             </li>
@@ -37,6 +37,9 @@
     </base-nav>
 </template>
 <script>
+import store from '../store'
+import auth from '../auth'
+import { EventBus } from '../event/eventBus'
 
 export default {
   name: 'dashboard-navbar',
@@ -60,6 +63,15 @@ export default {
     },
     toggleMenu () {
       this.showMenu = !this.showMenu
+    },
+    logoutUser () {
+      auth.logout()
+      EventBus.$emit('disconnectActions')
+    }
+  },
+  computed: {
+    usr: function () {
+      return store.state.usr
     }
   }
 }

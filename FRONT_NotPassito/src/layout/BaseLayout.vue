@@ -49,7 +49,7 @@
 import DashboardNavbar from './DashboardNavbar.vue'
 import ContentFooter from './ContentFooter.vue'
 import popupNewTable from '../views/Popup/PopupNewTable'
-import store from '../store'
+import auth from '../auth'
 import router from '../router'
 import { EventBus } from '../event/eventBus'
 import { FadeTransition } from 'vue2-transitions'
@@ -67,7 +67,10 @@ export default {
     }
   },
   created () {
-    this.checkUserConnection()
+    this.checkAuth()
+    EventBus.$on('disconnectActions', () => {
+      this.checkAuth()
+    })
   },
   methods: {
     toggleSidebar () {
@@ -79,11 +82,9 @@ export default {
       this.showPopup = true
       EventBus.$emit('showNewTablePopup', { 'show': this.showPopup })
     },
-    checkUserConnection () {
-      if (store.state.usr.user_email) {
-        console.log('User is connected')
-      } else {
-        console.log('User is NOT connected')
+    checkAuth () {
+      console.log('user : ' + auth.checkAuth())
+      if (!auth.checkAuth()) {
         router.push('/login')
       }
     }

@@ -1,24 +1,22 @@
 import store from '../store'
-import router from '../router'
+import { EventBus } from '../event/eventBus'
 import { HTTP } from '../http-constants'
 
 export default {
-  // TODO : replace after back is done
-  // user: {},
-  user: {
-    user_id: 1,
-    user_firstname: 'adonis',
-    user_lastname: 'lebg',
-    user_email: 'adonis@lebg.com',
-    user_password: 'testNegro',
-    table_name: 'network'
-  },
+  user: {},
 
   login (creds) {
     HTTP.post('/connect', { user_email: creds.email, user_password: creds.password }, {}
-    ).then(response => {
-      localStorage.setItem('currentUsr', response.results)
-      console.log(response.results)
+    ).then(async response => {
+      // Fill user
+      this.user.id = response.data[0].user_id
+      this.user.firstname = response.data[0].user_firstname
+      this.user.lastname = response.data[0].user_lastname
+      this.user.email = response.data[0].user_email
+      this.user.authenticated = true
+
+      await store.commit('instanceUser', this.user)
+      await EventBus.$emit('connectActions')
       return true
     }).catch(
       function (error) {
@@ -26,15 +24,17 @@ export default {
         return false
       }
     )
-
-    store.commit('instanceUser', this.user)
-    localStorage.setItem('currentUsr', this.user)
-    router.push('/')
   },
 
+  checkAuth () {
+    return store.state.usr.authenticated
+  },
+
+  // Waiting for signup, delete
+
   logout () {
-    localStorage.removeItem('todo')
-    store.commit('name of mutations')
+    store.commit('destroyUser')
+    EventBus.$emit('disconnectActions')
     this.user.authenticated = false
   }
 }

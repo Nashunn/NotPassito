@@ -36,6 +36,9 @@
 </template>
 <script>
 import ContentFooter from './ContentFooter.vue'
+import auth from '../auth'
+import router from '../router'
+import { EventBus } from '../event/eventBus'
 import { SlideYUpTransition } from 'vue2-transitions'
 
 export default {
@@ -55,6 +58,21 @@ export default {
     return {
       year: new Date().getFullYear(),
       showMenu: false
+    }
+  },
+  created () {
+    this.checkAuth()
+
+    EventBus.$on('connectActions', () => {
+      this.checkAuth()
+    })
+  },
+  methods: {
+    checkAuth () {
+      console.log('user : ' + auth.checkAuth())
+      if (auth.checkAuth()) {
+        router.push('/profile')
+      }
     }
   }
 }

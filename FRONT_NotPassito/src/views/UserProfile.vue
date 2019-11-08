@@ -39,20 +39,20 @@
                                 <div class="col">
                                     <div class="card-profile-stats d-flex justify-content-center mt-md-5">
                                         <div>
-                                            <span class="heading">2</span>
+                                            <span class="heading">{{ nbTables }}</span>
                                             <span class="description">Tables</span>
                                         </div>
                                         <div>
-                                            <span class="heading">8</span>
+                                            <span class="heading">{{ nbPwds }}</span>
                                             <span class="description">Passwords</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="text-center">
-                                <h3>Username</h3>
+                                <h3>{{ usr.firstname }} {{ usr.lastname }}</h3>
                                 <div class="h5 font-weight-300">
-                                    exemple@mail.com
+                                    {{ usr.email }}
                                 </div>
                             </div>
                         </div>
@@ -82,8 +82,35 @@
     </div>
 </template>
 <script>
+import store from '../store'
+import { HTTP } from '../http-constants'
+
 export default {
-  name: 'user-profile'
+  name: 'user-profile',
+  data () {
+    return {
+      usr: {},
+      nbTables: 0,
+      nbPwds: 0
+    }
+  },
+  mounted () {
+    this.usr = store.state.usr
+    this.getNbTables()
+    this.getNbPwds()
+  },
+  methods: {
+    getNbTables () {
+      HTTP.get('/user/' + this.usr.id + '/nbTable').then(response => {
+        this.nbTables = response.data[0].nb_table
+      })
+    },
+    getNbPwds () {
+      HTTP.get('/user/' + this.usr.id + '/nbPass').then(response => {
+        this.nbPwds = response.data[0].nb_pass
+      })
+    }
+  }
 }
 </script>
 <style></style>
