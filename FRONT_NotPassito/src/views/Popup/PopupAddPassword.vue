@@ -66,6 +66,7 @@ import { SlideYUpTransition } from 'vue2-transitions'
 import { EventBus } from '../../event/eventBus'
 import { HTTP } from '../../http-constants'
 import store from '../../store'
+import router from '../../router'
 
 export default {
   name: 'popupEditProfile',
@@ -80,7 +81,8 @@ export default {
         value: ''
       },
       usr: {},
-      show: false
+      show: false,
+      currentTable: 'Test'
     }
   },
   props: {
@@ -132,18 +134,28 @@ export default {
       this.show = false
     },
     addLine () {
+      console.log(this.usr.id)
+      console.log(this.currentTable)
+      console.log(this.model)
+
       HTTP.post(
-        '/user/' + this.usr.id + '/' + this.table + '/save',
+        '/user/' + this.usr.id + '/' + this.currentTable + '/save',
         { passwd_name: this.model.name, passwd_user: this.model.user, passwd_value: this.model.value },
         {}
       ).then(response => {
-        console.log('line added' + this.idItem)
+        router.go()
         this.closeModal()
       })
+    },
+    updateUserTable () {
+      // Add table to user and send user update
+      EventBus.$emit('updateUser', {  })
     }
   },
   mounted () {
     this.usr = store.state.usr
+
+    this.currentTable = this.$route.params.tablename
 
     EventBus.$on('showAddPassword', data => {
       this.show = data.show

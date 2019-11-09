@@ -10,7 +10,7 @@
         <template slot="body">Modify Line ? </template>
       </popupModifyLine>
       <popupAddPassword>
-        <template slot="body">
+        <template slot="body" :table= currentTable>
           <div class="mb-3">Ajouter un mot de passe</div>
         </template>
       </popupAddPassword>
