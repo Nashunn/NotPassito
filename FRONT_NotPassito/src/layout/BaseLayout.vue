@@ -2,7 +2,9 @@
   <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
     <!-- Popup -->
     <popupNewTable>
-      <template slot="body">New Table ?</template>
+      <template slot="body">
+        <div class="mb-3">Ajouter une nouvelle table</div>
+      </template>
     </popupNewTable>
     <!-- End Popup -->
 
@@ -69,6 +71,10 @@ export default {
   },
   mounted () {
     this.usr = store.state.usr
+    // Update tables info
+    EventBus.$on('updateUser', () => {
+      this.usr = store.state.usr
+    })
   },
   created () {
     this.checkAuth()

@@ -107,10 +107,14 @@ export default {
       this.show = false
     },
     deleteLine () {
-      HTTP.post('/user/' + this.usr.id + '/' + this.table + '/delete').then(response => {
+      HTTP.post('/user/' + this.usr.id + '/' + this.table + '/delete', { passwd_id: this.idItem }, {}).then(response => {
         console.log('line deleted ' + this.idItem)
+        this.updateUserTable()
         this.closeModal()
       })
+    },
+    updateUserTable () {
+      EventBus.$emit('updateUser')
     }
   },
   mounted () {

@@ -133,16 +133,11 @@ export default {
       this.show = false
     },
     addLine () {
-      console.log(this.usr.id)
-      console.log(this.currentTable)
-      console.log(this.model)
-
       HTTP.post(
         '/user/' + this.usr.id + '/' + this.currentTable + '/save',
         { passwd_name: this.model.name, passwd_user: this.model.user, passwd_value: this.model.value },
         {}
       ).then(response => {
-        // router.go()
         this.emptyModel()
         this.updateUserTable()
         this.closeModal()
