@@ -66,7 +66,6 @@ import { SlideYUpTransition } from 'vue2-transitions'
 import { EventBus } from '../../event/eventBus'
 import { HTTP } from '../../http-constants'
 import store from '../../store'
-import router from '../../router'
 
 export default {
   name: 'popupEditProfile',
@@ -143,13 +142,21 @@ export default {
         { passwd_name: this.model.name, passwd_user: this.model.user, passwd_value: this.model.value },
         {}
       ).then(response => {
-        router.go()
+        // router.go()
+        this.emptyModel()
+        this.updateUserTable()
         this.closeModal()
       })
     },
     updateUserTable () {
-      // Add table to user and send user update
-      EventBus.$emit('updateUser', {  })
+      EventBus.$emit('updateUser')
+    },
+    emptyModel () {
+      this.model = {
+        name: '',
+        user: '',
+        value: ''
+      }
     }
   },
   mounted () {

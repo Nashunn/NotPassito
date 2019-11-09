@@ -85,6 +85,10 @@ export default {
     this.usr = store.state.usr
     // Get current table
     this.currentTable = this.$route.params.tablename
+    // Update tables info
+    EventBus.$on('updateUser', () => {
+      this.getPwds(this.currentTable)
+    })
     // Get pwds lines
     this.getPwds(this.currentTable)
   },
