@@ -341,13 +341,10 @@ app.post('/user/:user_id/:table_name/update', (req, res) => {
   var userUrlShow = "/" + req.url.split("/")[1] + "/" + req.url.split("/")[2] + "/" + req.url.split("/")[3] + "/show";
 
   let sql = "UPDATE password p \
-  JOIN tablepassword tp on tp.passwd_id = p.passwd_id \
-  JOIN base b on b.base_tableid = tp.table_id \
-  JOIN user u on u.user_id = b.base_userid \
   SET passwd_name='"+ req.body.passwd_name + "', \
   passwd_user='"+ req.body.passwd_user + "', \
   passwd_value='"+ req.body.passwd_value + "'\
-  WHERE u.user_id = " + userId + " AND tp.table_name = '" + tableName + "';"
+  WHERE p.passwd_id = " + req.body.passwd_id;
 
   console.log(sql);
   let query = conn.query(sql, (err, results) => {
