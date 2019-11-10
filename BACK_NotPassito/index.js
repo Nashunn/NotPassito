@@ -249,7 +249,7 @@ app.post('/user/:user_id/createTable', (req, res) => {
                 data.tableId = results[0].table_id + 1;
                 console.log(data);
                 let sql_InsertTable = "INSERT INTO `tablepassword` (`table_id`, `passwd_id`, `table_name`) \
-                VALUES ("+data.tableId+", "+data.passwdId+", 'tableTest')";
+                VALUES ("+data.tableId+", "+data.passwdId+", '"+data.table_name+"')";
                 let query = conn.query(sql_InsertTable, data, (err, results) => {
                   if (err) throw err;
                   else{
@@ -314,6 +314,7 @@ app.post('/user/:user_id/:table_name/save', (req, res) => {
           let query_FindTablePasswd = conn.query(sql_FindTablePasswd, data,(err, resultsFindTable) => {
             if(err) throw err;
             else{
+              console.log("Result fin tabl", resultsFindTable);
               data.tableid = resultsFindTable[0].table_id;
               //3 Créé une jointure entre password et table tablepassword
               let sqlAddJoin = "INSERT INTO `tablepassword` (`table_id`, `passwd_id`, `table_name`) VALUES \
