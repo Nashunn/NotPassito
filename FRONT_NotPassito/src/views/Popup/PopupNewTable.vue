@@ -13,8 +13,32 @@
         <div class="modal-content" :class="[gradient ? `bg-gradient-${gradient}` : '',modalContentClasses]">
           <!-- Body -->
           <div class="modal-body" :class="bodyClasses">
+            <div class="mb-3">
+              <button type="button"
+                      class='close'
+                      @click="closeModal"
+                      data-dismiss="modal"
+                      aria-label="Close">
+                <span>×</span>
+              </button>
+            </div>
+
             <slot name="body"></slot>
-            <v-btn @click="closeModal">CLOSE</v-btn>
+
+            <!-- Content -->
+            <form role="form">
+              <base-input class="input-group-alternative mb-3"
+                          placeholder="Nom"
+                          addon-left-icon="ni ni-caps-small"
+                          v-model="model.name">
+              </base-input>
+            </form>
+            <!-- End Content -->
+
+            <div class="d-flex justify-content-between mt-3">
+              <v-btn @click="addTable" class="bg-green text-white bold mx-1">Créer</v-btn>
+              <v-btn @click="closeModal" class="bg-info text-white bold mx-1">Annuler</v-btn>
+            </div>
           </div>
           <!-- End Body -->
         </div>
@@ -28,6 +52,8 @@
 <script>
 import { SlideYUpTransition } from 'vue2-transitions'
 import { EventBus } from '../../event/eventBus'
+import { HTTP } from '../../http-constants'
+import store from '../../store'
 
 export default {
   name: 'popupNewTable',
@@ -36,7 +62,11 @@ export default {
   },
   data () {
     return {
-      show: false
+      show: false,
+      usr: {},
+      model: {
+        name: ''
+      }
     }
   },
   props: {
@@ -86,11 +116,38 @@ export default {
   methods: {
     closeModal () {
       this.show = false
+    },
+    addTable () {
+      HTTP.post(
+        '/user/' + this.usr.id + '/createTable',
+        { table_name: this.model.name },
+        {}
+      ).then(response => {
+        this.updateUserTable(this.model.name)
+        this.emptyModel()
+        this.closeModal()
+      })
+    },
+    updateUserTable (tableName) {
+      this.usr.tables.push(tableName)
+      store.commit('instanceUser', this.usr)
+      EventBus.$emit('updateUser')
+    },
+    emptyModel () {
+      this.model = {
+        name: ''
+      }
     }
   },
   mounted () {
     EventBus.$on('showNewTablePopup', data => {
       this.show = data.show
+    })
+
+    this.usr = store.state.usr
+
+    EventBus.$on('updatePopup', () => {
+      this.usr = store.state.usr
     })
   },
   watch: {

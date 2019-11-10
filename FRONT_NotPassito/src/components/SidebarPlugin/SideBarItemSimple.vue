@@ -1,11 +1,11 @@
 <template>
     <li class="nav-item">
-      <router-link class="nav-link" to="#">
+      <div class="nav-link np-clicker">
         <template>
             <i :class="icon"></i>
             <span class="nav-link-text">{{ name }}</span>
         </template>
-      </router-link>
+      </div>
     </li>
 </template>
 <script>

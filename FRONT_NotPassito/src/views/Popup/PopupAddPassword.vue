@@ -1,5 +1,5 @@
 <template>
-  <!-- Popup Modify line -->
+  <!-- Popup Add Password -->
   <SlideYUpTransition :duration="animationDuration">
     <div class="modal fade"
          @click.self="closeModal"
@@ -48,7 +48,7 @@
             <!-- End Content -->
 
             <div class="d-flex justify-content-between mt-3">
-              <v-btn @click="ModifyLine()" class="bg-green text-white bold mx-1">Modifier</v-btn>
+              <v-btn @click="addLine()" class="bg-green text-white bold mx-1">Enregistrer</v-btn>
               <v-btn @click="closeModal()" class="bg-info text-white bold mx-1">Annuler</v-btn>
             </div>
           </div>
@@ -58,7 +58,7 @@
 
     </div>
   </SlideYUpTransition>
-  <!-- Popup Modify line -->
+  <!-- Popup Add Password -->
 </template>
 
 <script>
@@ -68,7 +68,7 @@ import { HTTP } from '../../http-constants'
 import store from '../../store'
 
 export default {
-  name: 'popupModifyLine',
+  name: 'popupEditProfile',
   components: {
     SlideYUpTransition
   },
@@ -81,8 +81,7 @@ export default {
       },
       usr: {},
       show: false,
-      currentTable: 'Test',
-      idItem: -1
+      currentTable: 'Test'
     }
   },
   props: {
@@ -133,32 +132,36 @@ export default {
     closeModal () {
       this.show = false
     },
-    ModifyLine () {
-      HTTP.post('/user/' + this.usr.id + '/' + this.table + '/update', { passwd_id: this.idItem, passwd_user: this.model.user, passwd_name: this.model.name, passwd_value: this.model.value }, {}).then(response => {
-        console.log('line updated ' + this.idItem)
+    addLine () {
+      HTTP.post(
+        '/user/' + this.usr.id + '/' + this.currentTable + '/save',
+        { passwd_name: this.model.name, passwd_user: this.model.user, passwd_value: this.model.value },
+        {}
+      ).then(response => {
+        this.emptyModel()
         this.updateUserTable()
         this.closeModal()
       })
     },
     updateUserTable () {
       EventBus.$emit('updateUser')
+    },
+    emptyModel () {
+      this.model = {
+        name: '',
+        user: '',
+        value: ''
+      }
     }
   },
   mounted () {
-    EventBus.$on('showModifyLinePopup', data => {
-      this.show = data.show
-      this.idItem = data.pwd.passwd_id
-
-      this.model = {
-        name: data.pwd.passwd_name,
-        user: data.pwd.passwd_user,
-        value: data.pwd.passwd_value
-      }
-    })
-
     this.usr = store.state.usr
 
     this.currentTable = this.$route.params.tablename
+
+    EventBus.$on('showAddPassword', data => {
+      this.show = data.show
+    })
 
     EventBus.$on('updatePopup', () => {
       this.usr = store.state.usr

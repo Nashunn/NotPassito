@@ -13,8 +13,22 @@
         <div class="modal-content" :class="[gradient ? `bg-gradient-${gradient}` : '',modalContentClasses]">
           <!-- Body -->
           <div class="modal-body" :class="bodyClasses">
-            <slot name="body"></slot> ({{ idItem }})
-            <v-btn @click="closeModal">CLOSE</v-btn>
+            <div class="mb-3">
+              <button type="button"
+                      class='close'
+                      @click="closeModal"
+                      data-dismiss="modal"
+                      aria-label="Close">
+                <span>×</span>
+              </button>
+            </div>
+
+            <slot name="body" class="my-2"></slot>
+
+            <div class="d-flex justify-content-between mt-3">
+              <v-btn @click="deleteLine" class="bg-danger text-white bold mx-1">Supprimer</v-btn>
+              <v-btn @click="closeModal" class="bg-info text-white bold mx-1">Annuler</v-btn>
+            </div>
           </div>
           <!-- End Body -->
         </div>
@@ -26,6 +40,8 @@
 </template>
 
 <script>
+import store from '../../store'
+import { HTTP } from '../../http-constants'
 import { SlideYUpTransition } from 'vue2-transitions'
 import { EventBus } from '../../event/eventBus'
 
@@ -36,8 +52,10 @@ export default {
   },
   data () {
     return {
+      usr: {},
       show: false,
-      idItem: -1
+      idItem: -1,
+      table: ''
     }
   },
   props: {
@@ -87,12 +105,30 @@ export default {
   methods: {
     closeModal () {
       this.show = false
+    },
+    deleteLine () {
+      HTTP.post('/user/' + this.usr.id + '/' + this.table + '/delete', { passwd_id: this.idItem }, {}).then(response => {
+        console.log('line deleted ' + this.idItem)
+        this.updateUserTable()
+        this.closeModal()
+      })
+    },
+    updateUserTable () {
+      EventBus.$emit('updateUser')
     }
   },
   mounted () {
+    this.usr = store.state.usr
+
     EventBus.$on('showDeleteLinePopup', data => {
       this.show = data.show
       this.idItem = data.id
+      this.table = data.tablename
+    })
+
+    EventBus.$on('updatePopup', () => {
+      this.usr = store.state.usr
+      this.table = this.$route.params.tablename
     })
   },
   watch: {

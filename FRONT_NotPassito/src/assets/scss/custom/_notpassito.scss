@@ -7,10 +7,30 @@
   .np-logo-navbar {
     width: 40px;
   }
+  .np-logo-navbar-mini {
+    width: 20%;
+    margin: 0 40%;
+  }
 }
 @include media-breakpoint-up(lg) {
   .np-logo-navbar {
     width: 40%;
     margin: 0 30%;
   }
+  .np-logo-navbar-mini {
+    width: 20%;
+    margin: 0 40%;
+  }
+}
+
+.np-title {
+  font-size: xx-large;
+}
+
+.np-clicker, np-clicker-block {
+  cursor: pointer
+}
+
+.np-clicker-block:hover {
+  box-shadow: 0px 0px 10px -5px lightblue;
 }
