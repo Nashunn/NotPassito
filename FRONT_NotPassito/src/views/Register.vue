@@ -65,6 +65,17 @@ export default {
         lastname: '',
         email: '',
         password: ''
+      },
+      errFields: false
+    }
+  },
+  methods: {
+    register () {
+      if (this.model.lastname !== '' && this.model.firstname !== '' && this.model.email !== '' && this.model.password !== '') {
+        this.errFields = false
+        auth.register(this.model)
+      } else {
+        this.errFields = true
       }
     }
   },
@@ -93,16 +104,6 @@ export default {
       }
 
       return result
-    }
-  },
-  methods: {
-    register () {
-      if (this.model.lastname !== '' && this.model.firstname !== '' && this.model.email !== '' && this.model.password !== '') {
-        this.errFields = false
-        auth.register(this.model)
-      } else {
-        this.errFields = true
-      }
     }
   }
 }
