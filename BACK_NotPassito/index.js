@@ -384,7 +384,7 @@ app.post('/user/:user_id/:table_name/delete', (req, res) => {
             let query = conn.query(sqlDelete, (err, results) => {
               if(err) throw err;
               else{
-                res.return(200);
+                res.send(200);
               }
             });
           }
