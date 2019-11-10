@@ -7,7 +7,7 @@
         </template>
       </popupDeleteLine>
       <popupModifyLine>
-        <template slot="body">Modify Line ? </template>
+        <template slot="body"><div class="mb-3">Modifier un mot de passe</div></template>
       </popupModifyLine>
       <popupAddPassword>
         <template slot="body" :table= currentTable>
