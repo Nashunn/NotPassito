@@ -134,7 +134,7 @@ export default {
       this.show = false
     },
     ModifyLine () {
-      HTTP.post('/user/' + this.usr.id + '/' + this.table + '/update', { passwd_id: this.idItem }, {}).then(response => {
+      HTTP.post('/user/' + this.usr.id + '/' + this.table + '/update', { passwd_id: this.idItem, passwd_user: this.model.user, passwd_name: this.model.name, passwd_value: this.model.value }, {}).then(response => {
         console.log('line updated ' + this.idItem)
         this.updateUserTable()
         this.closeModal()
@@ -147,7 +147,13 @@ export default {
   mounted () {
     EventBus.$on('showModifyLinePopup', data => {
       this.show = data.show
-      this.idItem = data.id
+      this.idItem = data.pwd.passwd_id
+
+      this.model = {
+        name: data.pwd.passwd_name,
+        user: data.pwd.passwd_user,
+        value: data.pwd.passwd_value
+      }
     })
 
     this.usr = store.state.usr

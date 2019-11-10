@@ -45,7 +45,7 @@
                 <td>url.com</td>
                 <td>{{ pwd.passwd_level }}</td>
                 <td>
-                  <v-btn @click="showModified(pwd.passwd_id)" class="bg-info text-white bold mx-1" small>Modifier</v-btn>
+                  <v-btn @click="showModified(pwd)" class="bg-info text-white bold mx-1" small>Modifier</v-btn>
                   <v-btn @click="showDelete(pwd.passwd_id)" class="bg-danger text-white bold mx-1" small>Supprimer</v-btn>
                 </td>
               </tr>
@@ -99,9 +99,9 @@ export default {
       this.showPopup = true
       EventBus.$emit('showDeleteLinePopup', { 'show': this.showPopup, 'id': id, 'tablename': this.currentTable })
     },
-    showModified (id) {
+    showModified (pwd) {
       this.showPopup = true
-      EventBus.$emit('showModifyLinePopup', { 'show': this.showPopup, 'id': id })
+      EventBus.$emit('showModifyLinePopup', { 'show': this.showPopup, 'pwd': pwd })
     },
     showAddPassword () {
       this.showPopup = true
