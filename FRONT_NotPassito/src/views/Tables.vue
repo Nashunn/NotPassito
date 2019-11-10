@@ -91,6 +91,8 @@ export default {
     })
     // Get pwds lines
     this.getPwds(this.currentTable)
+    // Prepare Popups
+    EventBus.$emit('updatePopup')
   },
   methods: {
     showDelete (id) {

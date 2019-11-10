@@ -125,6 +125,11 @@ export default {
       this.idItem = data.id
       this.table = data.tablename
     })
+
+    EventBus.$on('updatePopup', () => {
+      this.usr = store.state.usr
+      this.table = this.$route.params.tablename
+    })
   },
   watch: {
     show (val) {

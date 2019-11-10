@@ -146,7 +146,9 @@ export default {
 
     this.usr = store.state.usr
 
-    this.currentTable = this.$route.params.tablename
+    EventBus.$on('updatePopup', () => {
+      this.usr = store.state.usr
+    })
   },
   watch: {
     show (val) {

@@ -32,6 +32,25 @@ export default {
     )
   },
 
+  register (creds) {
+    let data = {
+      user_lastname: creds.lastname,
+      user_firstname: creds.firstname,
+      user_email: creds.email,
+      user_password: creds.password
+    }
+
+    HTTP.post('/inscription', data, {}
+    ).then(async response => {
+      let loginCreds = {
+        email: creds.email,
+        password: creds.password
+      }
+
+      this.login(loginCreds)
+    })
+  },
+
   checkAuth () {
     return store.state.usr.authenticated
   },

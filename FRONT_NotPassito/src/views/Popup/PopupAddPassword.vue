@@ -162,6 +162,11 @@ export default {
     EventBus.$on('showAddPassword', data => {
       this.show = data.show
     })
+
+    EventBus.$on('updatePopup', () => {
+      this.usr = store.state.usr
+      this.currentTable = this.$route.params.tablename
+    })
   },
   watch: {
     show (val) {

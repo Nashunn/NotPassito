@@ -6,6 +6,9 @@
                     <div class="text-center text-muted mb-4">
                         Créer un compte
                     </div>
+                    <div v-if="errFields" class="text-warning my-1">
+                      Veuillez remplir les champs
+                    </div>
                     <form role="form">
                         <base-input class="input-group-alternative mb-3"
                                     placeholder="Nom"
@@ -37,7 +40,7 @@
                         </div>
 
                         <div class="text-center">
-                            <base-button type="primary" class="my-3">S'inscrire</base-button>
+                            <v-btn @click="register()" class="bg-primary text-white bold my-3">S'inscrire</v-btn>
                         </div>
                         <div class="text-center">
                           <small>Déjà un compte ?
@@ -51,6 +54,8 @@
     </div>
 </template>
 <script>
+import auth from '../auth'
+
 export default {
   name: 'register',
   data () {
@@ -88,6 +93,16 @@ export default {
       }
 
       return result
+    }
+  },
+  methods: {
+    register () {
+      if (this.model.lastname !== '' && this.model.firstname !== '' && this.model.email !== '' && this.model.password !== '') {
+        this.errFields = false
+        auth.register(this.model)
+      } else {
+        this.errFields = true
+      }
     }
   }
 }

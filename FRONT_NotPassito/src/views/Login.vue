@@ -48,7 +48,7 @@ export default {
         email: '',
         password: ''
       },
-      errFields: this.modelfalse
+      errFields: false
     }
   },
   methods: {

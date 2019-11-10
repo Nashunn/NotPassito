@@ -69,10 +69,10 @@
                             </div>
                         </div>
                         <template>
-                            <div class="d-flex justify-content-around">
+                            <div class="d-flex justify-content-around row">
                                 <div :key="table.id" v-for="table in usr.tables"
-                                    class="col-lg-3 p-0 np-clicker-block">
-                                    <div class="p-2 py-3 text-center bg-white border rounded" @click="redirectTable(table)" :title=table>
+                                    class="p-0 col-3 m-1">
+                                    <div class="p-2 py-3 text-center np-clicker bg-white border rounded" @click="redirectTable(table)" :title=table>
                                         {{table}}
                                     </div>
                                 </div>
