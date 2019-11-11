@@ -84,10 +84,10 @@ app.get('/user/:user_id/:table_name/show', (req, res) => {
       complexity = computeComplexity(results[entry].passwd_value)
       results[entry].passwd_level = complexity
     }
-    res.render('product_view', {
+    /*res.render('product_view', {
       results: results
-    });
-    //res.send(results);
+    });*/
+    res.send(results);
   });
 });
 
@@ -381,7 +381,7 @@ app.post('/user/:user_id/:table_name/delete', (req, res) => {
             let query = conn.query(sqlDelete, (err, results) => {
               if(err) throw err;
               else{
-                res.return(200);
+                res.send(200);
               }
             });
           }
