@@ -1,5 +1,5 @@
 # NotPassito
-Garder vos mots de passes en sécurité au sein de ce gestionnaire de mot de passe ! 🔏
+> Garder vos mots de passes en sécurité au sein de ce gestionnaire de mot de passe ! 🔏
 
 ## Introduction 
 Cette application a été réalisé dans le cadre d'un projet pour l'école d'ingénieur ESIEA.
