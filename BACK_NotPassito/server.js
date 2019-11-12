@@ -1,5 +1,7 @@
 //use path module
 const path = require('path');
+//use cors
+var cors = require('cors')
 //use express module
 const express = require('express');
 //use hbs view engine
@@ -34,6 +36,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 //set folder public as static folder for static file
 app.use('/assets',express.static(__dirname + '/public'));
+
+// cors
+app.use(cors())
+app.use(express.static(path.join(__dirname, 'dist/')))
+
+const path = require('path')
+app.use(express.static(path.join(__dirname, 'dist/')))
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
