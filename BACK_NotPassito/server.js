@@ -41,9 +41,6 @@ app.use('/assets',express.static(__dirname + '/public'));
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'dist/')))
 
-const path = require('path')
-app.use(express.static(path.join(__dirname, 'dist/')))
-
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
