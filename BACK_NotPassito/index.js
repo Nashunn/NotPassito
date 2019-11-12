@@ -14,13 +14,14 @@ const cookieParser = require('cookie-parser')
 var nbPasswd = 0;
 
 //Create Connection
- const conn = mysql.createConnection({
+const conn = mysql.createConnection({
   host: 'sql2.freemysqlhosting.net',
   port: '3306',
-  user: 'sql2310777',
-  password: 'uY3*aU8%',
-  database: 'sql2310777'
+  user: 'sql2311635',
+  password: 'lJ6%pB3!',
+  database: 'sql2311635'
 });
+
 
 /*const conn = mysql.createConnection({
   host: 'localhost',
