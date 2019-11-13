@@ -458,7 +458,7 @@ function anssiJudgment(_nbLow, _nbUpp, _nbDig, _nbSpec) {
     && _nbUpp > 0
     && _nbDig > 0
     && _nbSpec == 0)
-    return "genins"
+    return "genius"
 
   else if (length == 16
     && _nbLow > 0
