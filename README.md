@@ -13,13 +13,14 @@ Cette application permet de conserver des mots de passe en un même endroit pour
 - Nicolas BOULLET : Responsable principal du Front-end
 
 ## Consignes respectées
-- Dépôt Github : 
-- Vue JS :
-- Node JS :
-- CRUD (pour les mots de passe) :
-- Authentification utilisateur
-- Mise en production : 
-
+- Dépôt Github : ✔️
+- Vue JS : ✔️
+- Node JS : ✔️
+- CRUD (pour les mots de passe) : ✔️
+- Authentification utilisateur : ✔️
+- Persistence des données : ✔️
+- Mise en production : ❗ Difficulté à déployer sur [Glitch.com](https://glitch.com/)
+ 
 ## Utilisation
 - Webpack
 - Node JS
@@ -29,6 +30,7 @@ Cette application permet de conserver des mots de passe en un même endroit pour
 - Vuex
 - Bootstrap
 - Vuetify
+- [Vue Argon Dashboard](https://www.creative-tim.com/product/vue-argon-dashboard)
 
 ## Démonstration
 - Inscription d'un utilisateur :
